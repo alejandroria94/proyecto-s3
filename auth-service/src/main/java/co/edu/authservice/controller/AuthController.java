@@ -6,7 +6,6 @@ import co.edu.authservice.dto.TokenValidationResponse;
 import co.edu.authservice.service.AuthService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,9 +26,6 @@ public class AuthController {
     @GetMapping("/validate")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<TokenValidationResponse> validate(@RequestHeader("Authorization") String authorization) {
-        TokenValidationResponse response = authService.validate(authorization);
-        return response.isValid()
-                ? ResponseEntity.ok(response)
-                : ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        return ResponseEntity.ok(authService.validate(authorization));
     }
 }
