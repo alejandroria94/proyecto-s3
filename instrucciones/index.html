@@ -3,668 +3,87 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Informe de Análisis del Proyecto - Ingeniería de Software III</title>
+  <title>Proyecto Final Guiado del Curso</title>
+
   <style>
     :root{
-      --blue:#1f3c88;
-      --blue-dark:#162c66;
-      --blue-soft:#eef4ff;
-      --text:#1f2937;
-      --muted:#4b5563;
-      --bg:#f5f7fb;
-      --white:#ffffff;
-      --border:#dbe3f2;
-      --code:#eef2f7;
-      --ok:#0f766e;
-      --warn:#b45309;
-      --shadow:0 10px 24px rgba(31,60,136,.08);
-      --radius:18px;
+      --blue:#1f3c88;--blue-dark:#142a61;--soft:#edf3ff;--soft-2:#f8fbff;--border:#dbe4f3;
+      --bg:#f5f7fb;--text:#1f2937;--muted:#4b5563;--white:#fff;--shadow:0 10px 28px rgba(31,60,136,.08);
+      --radius:18px;--code:#eef2f7;--ok:#0f766e;--warn:#b45309;
     }
-
-    *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
-
-    body{
-      margin:0;
-      font-family:Arial, Helvetica, sans-serif;
-      background:var(--bg);
-      color:var(--text);
-      line-height:1.65;
-    }
-
-    .container{
-      width:min(1120px, calc(100% - 32px));
-      margin:0 auto;
-    }
-
-    .hero{
-      background:linear-gradient(135deg, var(--blue), var(--blue-dark));
-      color:#fff;
-      padding:46px 0 34px;
-      box-shadow:var(--shadow);
-    }
-
-    .hero a{
-      display:inline-block;
-      color:#dbe7ff;
-      text-decoration:none;
-      font-weight:bold;
-      margin-bottom:16px;
-    }
-
-    .hero h1{
-      margin:0 0 12px;
-      font-size:clamp(2rem, 4vw, 3rem);
-      line-height:1.15;
-    }
-
-    .hero p{
-      margin:0;
-      max-width:950px;
-      color:#ebf1ff;
-      font-size:1.03rem;
-    }
-
-    main{
-      padding:28px 0 56px;
-    }
-
-    .card{
-      background:var(--white);
-      border:1px solid var(--border);
-      border-radius:var(--radius);
-      padding:24px;
-      box-shadow:var(--shadow);
-      margin-bottom:22px;
-    }
-
-    h2,h3,h4{
-      color:var(--blue);
-      margin-top:0;
-    }
-
-    h2{
-      font-size:1.6rem;
-      border-bottom:3px solid var(--blue-soft);
-      padding-bottom:10px;
-      margin-bottom:18px;
-    }
-
-    h3{
-      font-size:1.22rem;
-      margin-top:28px;
-      margin-bottom:10px;
-    }
-
-    h4{
-      font-size:1.02rem;
-      margin-top:22px;
-      margin-bottom:10px;
-    }
-
+    *{box-sizing:border-box} html{scroll-behavior:smooth}
+    body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text);line-height:1.65}
+    .container{width:min(1180px,calc(100% - 32px));margin:0 auto}
+    header.hero{background:linear-gradient(135deg,var(--blue),var(--blue-dark));color:#fff;padding:44px 0 30px;box-shadow:var(--shadow)}
+    .back{display:inline-block;color:#dbe7ff;text-decoration:none;font-weight:bold;margin-bottom:16px}
+    h1{margin:0 0 12px;font-size:clamp(1.9rem,4vw,3rem);line-height:1.15}
+    header.hero p{margin:0;max-width:980px;color:#edf2ff}
+    main{padding:28px 0 52px}
+    .card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);margin-bottom:22px}
+    h2,h3,h4{color:var(--blue);margin-top:0}
+    h2{font-size:1.65rem;border-bottom:3px solid var(--soft);padding-bottom:10px;margin-bottom:18px}
+    h3{font-size:1.2rem;margin-top:24px;margin-bottom:10px}
+    h4{font-size:1.02rem;margin-top:18px;margin-bottom:8px}
     p{margin:0 0 14px}
-    ul,ol{padding-left:22px}
-    li{margin-bottom:8px}
-
-    .toc{
-      background:#f8fbff;
-      border:1px solid var(--border);
-      border-radius:16px;
-      padding:20px;
-    }
-
-    .toc ol{
-      margin:0;
-      padding-left:22px;
-      columns:2;
-      column-gap:38px;
-    }
-
-    .toc a{
-      color:var(--blue);
-      text-decoration:none;
-      font-weight:600;
-    }
-
-    .grid-2{
-      display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
-      gap:18px;
-    }
-
-    .grid-3{
-      display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
-      gap:18px;
-    }
-
-    .mini-card{
-      border:1px solid var(--border);
-      background:#fbfdff;
-      border-radius:16px;
-      padding:18px;
-    }
-
-    .pill{
-      display:inline-block;
-      padding:6px 12px;
-      border-radius:999px;
-      background:var(--blue-soft);
-      border:1px solid #cfdcff;
-      color:var(--blue);
-      font-weight:700;
-      font-size:.92rem;
-      margin:4px 8px 4px 0;
-    }
-
-    .note,.warning,.success{
-      border-radius:14px;
-      padding:16px 18px;
-      margin:16px 0;
-      border:1px solid transparent;
-    }
-
-    .note{
-      background:#eff6ff;
-      border-color:#bfdbfe;
-    }
-
-    .warning{
-      background:#fff7ed;
-      border-color:#fdba74;
-    }
-
-    .success{
-      background:#ecfdf5;
-      border-color:#a7f3d0;
-    }
-
-    table{
-      width:100%;
-      border-collapse:collapse;
-      margin:14px 0 18px;
-      background:#fff;
-      overflow:hidden;
-      border-radius:12px;
-    }
-
-    th,td{
-      border:1px solid #dbe3f2;
-      padding:12px;
-      text-align:left;
-      vertical-align:top;
-    }
-
-    th{
-      background:#edf3ff;
-      color:var(--blue);
-    }
-
-    pre{
-      background:var(--code);
-      border:1px solid #d8e0ea;
-      border-radius:14px;
-      padding:16px;
-      overflow:auto;
-      margin:14px 0 18px;
-      font-size:.93rem;
-      line-height:1.5;
-    }
-
-    code{
-      font-family:Consolas, Monaco, "Courier New", monospace;
-    }
-
-    .footer{
-      text-align:center;
-      color:var(--muted);
-      font-size:.95rem;
-      padding:18px 0 10px;
-    }
-
-    @media (max-width:920px){
-      .grid-2,.grid-3{grid-template-columns:1fr}
-      .toc ol{columns:1}
-    }
+    .grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+    .grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+    .toc{background:var(--soft-2);border:1px solid var(--border);border-radius:16px;padding:20px}
+    .toc ol{margin:0;padding-left:22px;columns:2;column-gap:36px}
+    .toc li{margin-bottom:8px}.toc a,.link-card a{color:var(--blue);text-decoration:none;font-weight:700}
+    .link-card{background:#fbfdff;border:1px solid var(--border);border-radius:16px;padding:18px;height:100%}
+    .step{border-left:5px solid var(--blue);background:#fbfdff;padding:16px 18px;border-radius:12px;margin:12px 0}
+    .note,.success,.warning{border-radius:14px;padding:16px 18px;margin:16px 0;border:1px solid transparent}
+    .note{background:#eff6ff;border-color:#bfdbfe}.success{background:#ecfdf5;border-color:#a7f3d0}.warning{background:#fff7ed;border-color:#fdba74}
+    pre{background:var(--code);color:#111827;border:1px solid #d8e0ea;border-radius:14px;padding:16px;overflow:auto;font-size:.92rem;line-height:1.5;margin:14px 0 18px}
+    code{font-family:Consolas,Monaco,'Courier New',monospace}
+    table{width:100%;border-collapse:collapse;margin:14px 0 18px;background:#fff;border-radius:12px;overflow:hidden}
+    th,td{border:1px solid var(--border);padding:12px;text-align:left;vertical-align:top} th{background:var(--soft);color:var(--blue)}
+    .pill{display:inline-block;background:var(--soft);color:var(--blue);border:1px solid #cdd9fb;padding:6px 12px;border-radius:999px;font-size:.92rem;margin:4px 8px 4px 0;font-weight:700}
+    .footer{text-align:center;color:var(--muted);padding:10px 0 0;font-size:.95rem}
+    @media (max-width: 920px){.grid-2,.grid-3{grid-template-columns:1fr}.toc ol{columns:1}}
   </style>
+
 </head>
 <body>
-  <header class="hero">
-    <div class="container">
-      <a href="../">← Ver Codigo fuente</a>
-      <h1>Informe de análisis del proyecto</h1>
-      <p>
-        Este documento presenta el análisis funcional y técnico del proyecto final del curso de Ingeniería de Software III. 
-        Su propósito es describir el problema a resolver, el contexto del sistema, los actores involucrados, los requerimientos, 
-        la arquitectura propuesta, los riesgos identificados y los criterios que orientan el desarrollo de la solución.
-      </p>
-    </div>
-  </header>
+<header class="hero">
+  <div class="container">
+    <a class="back" href="../README.md">← Volver</a>
+    <h1>Proyecto Final Guiado del Curso</h1>
+    <p>Portal principal con la navegación completa del proyecto final y las páginas explicativas por módulo.</p>
+  </div>
+</header>
+<main>
+  <div class="container">
 
-  <main>
-    <div class="container">
+<section class="card">
+  <h2>Bienvenida</h2>
+  <p>Este sitio reúne la guía completa del proyecto final del curso. Aquí no solo se describe qué debe construir el estudiante, sino también por qué se construye así, cuál es la secuencia recomendada de desarrollo y cómo se conecta cada módulo con los aprendizajes del laboratorio base.</p>
+  <div class="success"><strong>Idea central:</strong> el proyecto final no parte de cero. Es una continuación natural del Lab 04, ampliando la autenticación, la seguridad, la comunicación entre servicios y la orquestación con Docker.</div>
+</section>
+<section class="card">
+  <h2>Rutas disponibles</h2>
+  <div class="grid-3">
+    <div class="link-card"><h3><a href="proyecto-final-guiado.html">Guía general del proyecto</a></h3><p>Contiene el caso, objetivos, competencias, fases, arquitectura, entregables, rúbrica, pruebas y checklist final.</p></div>
+    <div class="link-card"><h3><a href="auth-service.html">Módulo auth-service</a></h3><p>Explica la autenticación, el uso de BCrypt, la generación de JWT, la validación del token y la carga inicial de usuarios.</p></div>
+    <div class="link-card"><h3><a href="estudiantes-service.html">Módulo estudiantes-service</a></h3><p>Describe cómo transformar el CRUD base del laboratorio en un microservicio protegido que reutiliza la arquitectura por capas.</p></div>
+    <div class="link-card"><h3><a href="cursos-service.html">Módulo cursos-service</a></h3><p>Presenta la construcción de un nuevo servicio siguiendo el mismo patrón técnico del curso para fortalecer la repetición arquitectónica.</p></div>
+    <div class="link-card"><h3><a href="matriculas-service.html">Módulo matriculas-service</a></h3><p>Explica las validaciones de negocio, el consumo con OpenFeign y el control de duplicidad y consistencia antes de registrar una matrícula.</p></div>
+    <div class="link-card"><h3><a href="docker-pruebas.html">Docker, Swagger y pruebas</a></h3><p>Detalla cómo ejecutar todo el sistema, qué validar en Swagger y qué evidencias presentar en la entrega final.</p></div>
+  </div>
+</section>
+<section class="card">
+  <h2>Qué encontrará el estudiante en este sitio</h2>
+  <ul>
+    <li>Una descripción pedagógica del propósito del proyecto y del valor de cada módulo.</li>
+    <li>Una secuencia guiada para no perderse durante el desarrollo.</li>
+    <li>Bloques de código base para arrancar cada servicio.</li>
+    <li>La lógica de roles esperada y las pruebas mínimas obligatorias.</li>
+    <li>Orientaciones para documentar el trabajo y empacarlo con Docker.</li>
+  </ul>
+</section>
 
-      <section class="card">
-        <h2>Contenido</h2>
-        <div class="toc">
-          <ol>
-            <li><a href="#introduccion"> Introducción</a></li>
-            <li><a href="#descripcion"> Descripción general del proyecto</a></li>
-            <li><a href="#problema"> Problema identificado</a></li>
-            <li><a href="#justificacion"> Justificación</a></li>
-            <li><a href="#objetivos"> Objetivos</a></li>
-            <li><a href="#alcance"> Alcance del proyecto</a></li>
-            <li><a href="#actores"> Actores del sistema</a></li>
-            <li><a href="#requisitos-funcionales"> Requisitos funcionales</a></li>
-            <li><a href="#requisitos-no-funcionales">Requisitos no funcionales</a></li>
-            <li><a href="#reglas">Reglas de negocio</a></li>
-            <li><a href="#arquitectura"> Análisis arquitectónico</a></li>
-            <li><a href="#modulos">Análisis por módulos</a></li>
-            <li><a href="#datos"> Modelo conceptual de datos</a></li>
-            <li><a href="#riesgos"> Riesgos y consideraciones técnicas</a></li>
-            <li><a href="#pruebas"> Estrategia de validación</a></li>
-            <li><a href="#conclusiones"> Conclusiones del análisis</a></li>
-          </ol>
-        </div>
-      </section>
-
-      <section class="card" id="introduccion">
-        <h2>1. Introducción</h2>
-        <p>
-          El desarrollo de un sistema de software requiere una fase previa de análisis que permita comprender con claridad 
-          el problema, delimitar el alcance de la solución y definir la estructura general sobre la cual se construirá el proyecto. 
-          En este caso, el proyecto final del curso se enfoca en el diseño de una <strong>plataforma académica segura basada en microservicios</strong>, 
-          orientada a la administración de estudiantes, cursos y matrículas.
-        </p>
-        <p>
-          El análisis presentado en este informe busca establecer una base sólida para la implementación posterior, permitiendo que el equipo 
-          identifique de manera anticipada las responsabilidades de cada módulo, los flujos de información, las restricciones de seguridad 
-          y las decisiones técnicas más relevantes.
-        </p>
-      </section>
-
-      <section class="card" id="descripcion">
-        <h2>2. Descripción general del proyecto</h2>
-        <p>
-          El proyecto consiste en la construcción de una solución distribuida compuesta por varios microservicios, cada uno especializado 
-          en una responsabilidad específica del dominio académico. La propuesta toma como punto de partida una base desarrollada previamente 
-          en el curso y la amplía hacia un escenario más realista, donde la autenticación, la autorización, la gestión de entidades principales 
-          y la comunicación entre servicios forman parte integral del sistema.
-        </p>
-
-        <div class="grid-2">
-          <div class="mini-card">
-            <h3>Nombre del proyecto</h3>
-            <p>Plataforma Académica Segura basada en Microservicios.</p>
-          </div>
-          <div class="mini-card">
-            <h3>Propósito general</h3>
-            <p>Administrar estudiantes, cursos y matrículas mediante servicios independientes protegidos con JWT.</p>
-          </div>
-        </div>
-      </section>
-
-      <section class="card" id="problema">
-        <h2>3. Problema identificado</h2>
-        <p>
-          En muchos entornos académicos pequeños o en escenarios de práctica, la gestión de información suele desarrollarse mediante aplicaciones 
-          monolíticas o procesos manuales que dificultan la escalabilidad, la seguridad y el mantenimiento. Estas limitaciones se hacen más evidentes 
-          cuando se requiere separar responsabilidades, controlar el acceso según roles y exponer funcionalidades de forma organizada mediante APIs.
-        </p>
-        <p>
-          A partir de esta situación, se identifica la necesidad de una solución que permita:
-        </p>
-        <ul>
-          <li>centralizar la autenticación y la validación de usuarios;</li>
-          <li>separar la lógica de negocio en módulos independientes;</li>
-          <li>proteger los recursos del sistema mediante tokens;</li>
-          <li>facilitar la evolución del sistema sin afectar todos los componentes al mismo tiempo;</li>
-          <li>disponer de una estructura coherente para pruebas, documentación y despliegue.</li>
-        </ul>
-      </section>
-
-      <section class="card" id="justificacion">
-        <h2>4. Justificación</h2>
-        <p>
-          La construcción de este proyecto resulta pertinente porque permite aplicar, de forma integrada, los principales conceptos abordados 
-          durante el curso: arquitectura por capas, servicios REST, seguridad con JWT, documentación con Swagger, comunicación entre microservicios 
-          y despliegue reproducible mediante Docker.
-        </p>
-        <p>
-          Además de su valor técnico, el proyecto tiene un valor formativo importante, ya que obliga al estudiante a pasar de ejercicios aislados 
-          a una solución articulada, donde las decisiones de análisis impactan directamente la calidad de la implementación final.
-        </p>
-      </section>
-
-      <section class="card" id="objetivos">
-        <h2>5. Objetivos</h2>
-
-        <h3>5.1 Objetivo general</h3>
-        <p>
-          Analizar y estructurar una solución de software basada en microservicios para la gestión académica, definiendo sus componentes, 
-          requerimientos, restricciones y criterios técnicos antes de su implementación.
-        </p>
-
-        <h3>5.2 Objetivos específicos</h3>
-        <ul>
-          <li>Identificar el problema y las necesidades principales del sistema.</li>
-          <li>Definir los actores, el alcance y los procesos esenciales del proyecto.</li>
-          <li>Establecer los requisitos funcionales y no funcionales de la solución.</li>
-          <li>Describir la arquitectura propuesta y la función de cada microservicio.</li>
-          <li>Reconocer riesgos técnicos y criterios de validación del sistema.</li>
-        </ul>
-      </section>
-
-      <section class="card" id="alcance">
-        <h2>6. Alcance del proyecto</h2>
-        <p>
-          El alcance del proyecto cubre el análisis y la posterior implementación de una plataforma académica básica con cuatro componentes principales:
-        </p>
-
-        <div class="grid-2">
-          <div class="mini-card">
-            <span class="pill">auth-service</span>
-            <p>Gestiona el inicio de sesión, la generación de tokens JWT y la validación de credenciales.</p>
-          </div>
-          <div class="mini-card">
-            <span class="pill">estudiantes-service</span>
-            <p>Administra la información de los estudiantes y expone operaciones CRUD protegidas.</p>
-          </div>
-          <div class="mini-card">
-            <span class="pill">cursos-service</span>
-            <p>Administra la oferta académica, los cursos disponibles y sus datos principales.</p>
-          </div>
-          <div class="mini-card">
-            <span class="pill">matriculas-service</span>
-            <p>Registra y consulta matrículas, validando previamente la existencia de estudiantes y cursos.</p>
-          </div>
-        </div>
-
-        <div class="warning">
-          <strong>Fuera de alcance:</strong> no se contempla en esta etapa la integración con bases de datos externas distribuidas, 
-          interfaz gráfica completa para usuarios finales, balanceadores, API Gateway ni mecanismos avanzados de observabilidad.
-        </div>
-      </section>
-
-      <section class="card" id="actores">
-        <h2>7. Actores del sistema</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Actor</th>
-              <th>Descripción</th>
-              <th>Principales acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Administrador</td>
-              <td>Usuario con privilegios completos sobre el sistema.</td>
-              <td>Gestionar estudiantes, cursos, matrículas y consultar servicios protegidos.</td>
-            </tr>
-            <tr>
-              <td>Docente</td>
-              <td>Usuario con permisos de consulta sobre parte del sistema.</td>
-              <td>Consultar estudiantes, cursos y matrículas según las reglas definidas.</td>
-            </tr>
-            <tr>
-              <td>Estudiante</td>
-              <td>Usuario con acceso restringido a información asociada a su rol.</td>
-              <td>Consultar cursos y revisar sus propias matrículas.</td>
-            </tr>
-            <tr>
-              <td>Sistema de autenticación</td>
-              <td>Componente que valida credenciales y firma tokens.</td>
-              <td>Emitir y validar JWT.</td>
-            </tr>
-          </tbody>
-        </table>
-      </section>
-
-      <section class="card" id="requisitos-funcionales">
-        <h2>8. Requisitos funcionales</h2>
-        <ol>
-          <li>El sistema debe permitir el inicio de sesión mediante usuario y contraseña.</li>
-          <li>El sistema debe generar un token JWT cuando las credenciales sean válidas.</li>
-          <li>El sistema debe validar la autenticidad del token en los servicios protegidos.</li>
-          <li>El sistema debe permitir registrar, consultar, actualizar y eliminar estudiantes.</li>
-          <li>El sistema debe permitir registrar, consultar, actualizar y eliminar cursos.</li>
-          <li>El sistema debe permitir registrar y consultar matrículas.</li>
-          <li>El sistema debe verificar que un estudiante exista antes de matricularlo.</li>
-          <li>El sistema debe verificar que un curso exista antes de registrar una matrícula.</li>
-          <li>El acceso a los endpoints debe depender del rol del usuario autenticado.</li>
-          <li>El sistema debe documentar sus endpoints mediante Swagger/OpenAPI.</li>
-        </ol>
-      </section>
-
-      <section class="card" id="requisitos-no-funcionales">
-        <h2>9. Requisitos no funcionales</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Categoría</th>
-              <th>Requisito</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Seguridad</td>
-              <td>Los servicios protegidos deben exigir token Bearer válido.</td>
-            </tr>
-            <tr>
-              <td>Mantenibilidad</td>
-              <td>El proyecto debe conservar una arquitectura organizada por capas.</td>
-            </tr>
-            <tr>
-              <td>Despliegue</td>
-              <td>La solución debe poder ejecutarse con Docker Compose.</td>
-            </tr>
-            <tr>
-              <td>Usabilidad técnica</td>
-              <td>Las APIs deben estar documentadas y probables desde Swagger UI.</td>
-            </tr>
-            <tr>
-              <td>Portabilidad</td>
-              <td>El sistema debe poder ejecutarse localmente en distintos equipos del curso.</td>
-            </tr>
-            <tr>
-              <td>Consistencia</td>
-              <td>Los servicios deben manejar respuestas estructuradas y errores controlados.</td>
-            </tr>
-          </tbody>
-        </table>
-      </section>
-
-      <section class="card" id="reglas">
-        <h2>10. Reglas de negocio</h2>
-        <ul>
-          <li>Solo un usuario autenticado puede consumir servicios protegidos.</li>
-          <li>Solo el rol <strong>ADMIN</strong> puede crear, actualizar o eliminar estudiantes y cursos.</li>
-          <li>El rol <strong>DOCENTE</strong> puede consultar información, pero no modificar registros administrativos.</li>
-          <li>El rol <strong>ESTUDIANTE</strong> tiene acceso limitado a consultas específicas.</li>
-          <li>No se debe registrar una matrícula si el estudiante no existe.</li>
-          <li>No se debe registrar una matrícula si el curso no existe.</li>
-          <li>No se debe permitir una matrícula activa duplicada para el mismo estudiante y curso.</li>
-        </ul>
-      </section>
-
-      <section class="card" id="arquitectura">
-        <h2>11. Análisis arquitectónico</h2>
-        <p>
-          La solución adopta una arquitectura basada en microservicios. Esta elección responde a la necesidad de separar responsabilidades, 
-          facilitar el mantenimiento y permitir que cada componente evolucione con menor acoplamiento.
-        </p>
-
-        <h3>11.1 Estilo arquitectónico</h3>
-        <pre><code>Cliente
-   |
-   | HTTP + Bearer Token
-   v
-Microservicios REST
-   |
-   +-- auth-service
-   +-- estudiantes-service
-   +-- cursos-service
-   +-- matriculas-service</code></pre>
-
-        <h3>11.2 Patrón interno de cada servicio</h3>
-        <pre><code>controller -> handler -> service -> repository -> model</code></pre>
-
-        <div class="note">
-          <strong>Interpretación del análisis:</strong> la arquitectura seleccionada no solo responde a una necesidad técnica, 
-          sino también didáctica, ya que permite evidenciar claramente la separación de responsabilidades y el flujo de cada solicitud.
-        </div>
-      </section>
-
-      <section class="card" id="modulos">
-        <h2>12. Análisis por módulos</h2>
-
-        <h3>12.1 auth-service</h3>
-        <p>
-          Es el componente responsable de la autenticación. Su función es recibir credenciales, verificar al usuario, generar el token JWT 
-          y exponer un endpoint de validación utilizado por los demás servicios.
-        </p>
-
-        <h3>12.2 estudiantes-service</h3>
-        <p>
-          Se encarga de la administración de estudiantes. Este servicio representa una de las entidades principales del dominio 
-          y expone operaciones CRUD con validaciones básicas y control de acceso por rol.
-        </p>
-
-        <h3>12.3 cursos-service</h3>
-        <p>
-          Administra la información de los cursos y complementa el dominio académico. Su existencia permite separar la lógica 
-          de oferta académica respecto de la gestión de estudiantes.
-        </p>
-
-        <h3>12.4 matriculas-service</h3>
-        <p>
-          Orquesta la relación entre estudiantes y cursos. Su análisis es especialmente importante porque involucra validaciones 
-          cruzadas y comunicación entre microservicios, por lo cual introduce dependencias controladas mediante clientes Feign.
-        </p>
-      </section>
-
-      <section class="card" id="datos">
-        <h2>13. Modelo conceptual de datos</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Entidad</th>
-              <th>Atributos principales</th>
-              <th>Observaciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Usuario</td>
-              <td>id, username, password, role</td>
-              <td>Se utiliza en el servicio de autenticación.</td>
-            </tr>
-            <tr>
-              <td>Estudiante</td>
-              <td>id, nombre, apellido, email, edad</td>
-              <td>Representa a los usuarios académicos registrados.</td>
-            </tr>
-            <tr>
-              <td>Curso</td>
-              <td>id, codigo, nombre, descripcion, creditos, docenteResponsable</td>
-              <td>Representa la oferta académica disponible.</td>
-            </tr>
-            <tr>
-              <td>Matricula</td>
-              <td>id, estudianteId, cursoId, fechaMatricula, estado</td>
-              <td>Relaciona estudiantes con cursos.</td>
-            </tr>
-          </tbody>
-        </table>
-      </section>
-
-      <section class="card" id="riesgos">
-        <h2>14. Riesgos y consideraciones técnicas</h2>
-        <div class="grid-2">
-          <div class="mini-card">
-            <h3>Riesgo de seguridad</h3>
-            <p>Una configuración incorrecta del filtro JWT puede dejar recursos expuestos o bloquear accesos válidos.</p>
-          </div>
-          <div class="mini-card">
-            <h3>Riesgo de integración</h3>
-            <p>La comunicación entre servicios puede fallar si no se definen adecuadamente las URLs, puertos o contratos.</p>
-          </div>
-          <div class="mini-card">
-            <h3>Riesgo de consistencia</h3>
-            <p>Errores en validaciones cruzadas podrían permitir registros inconsistentes en matrículas.</p>
-          </div>
-          <div class="mini-card">
-            <h3>Riesgo de despliegue</h3>
-            <p>Una configuración incompleta en Docker Compose puede impedir la ejecución integrada del proyecto.</p>
-          </div>
-        </div>
-
-        <div class="warning">
-          <strong>Consideración importante:</strong> aunque el sistema usa H2 para simplificar el entorno del curso, 
-          esta decisión implica que los datos son adecuados para prácticas y pruebas, no para persistencia productiva real.
-        </div>
-      </section>
-
-      <section class="card" id="pruebas">
-        <h2>15. Estrategia de validación</h2>
-        <p>
-          El análisis del proyecto debe complementarse con una estrategia de validación que permita comprobar el cumplimiento funcional 
-          y técnico de la solución. Para ello, se propone validar al menos los siguientes escenarios:
-        </p>
-        <ul>
-          <li>inicio de sesión exitoso y fallido;</li>
-          <li>acceso con token válido y acceso sin token;</li>
-          <li>consumo de endpoints según rol autorizado y no autorizado;</li>
-          <li>creación y consulta de estudiantes;</li>
-          <li>creación y consulta de cursos;</li>
-          <li>registro válido e inválido de matrículas;</li>
-          <li>levantamiento integral del sistema con Docker Compose.</li>
-        </ul>
-
-        <div class="success">
-          <strong>Resultado esperado de la validación:</strong> el sistema debe demostrar coherencia entre el análisis realizado, 
-          la arquitectura propuesta y el comportamiento observado en las pruebas funcionales.
-        </div>
-      </section>
-
-      <section class="card" id="conclusiones">
-        <h2>16. Conclusiones del análisis</h2>
-        <p>
-          El análisis realizado permite concluir que el proyecto propuesto es adecuado para integrar los conocimientos del curso 
-          en una única solución coherente. El problema identificado exige control de acceso, separación de responsabilidades y una arquitectura 
-          capaz de sostener crecimiento funcional sin perder claridad estructural.
-        </p>
-        <p>
-          Desde la perspectiva académica, este proyecto representa una oportunidad valiosa para que el estudiante aplique principios de análisis, 
-          modelado, diseño y documentación, antes de concentrarse en la implementación. La fase de análisis no debe entenderse como un trámite, 
-          sino como una herramienta que reduce errores posteriores y mejora la calidad del software desarrollado.
-        </p>
-        <p>
-          En consecuencia, este informe constituye la base conceptual para la construcción del proyecto final y orienta las decisiones técnicas 
-          que se ejecutarán en las siguientes fases del curso.
-        </p>
-      </section>
-
-      <section class="card">
-        <h2>Anexo sugerido</h2>
-        <p>
-          Si deseas enriquecer este informe en una siguiente versión, puedes agregar:
-        </p>
-        <ul>
-          <li>diagrama de casos de uso;</li>
-          <li>diagrama de componentes;</li>
-          <li>diagrama entidad-relación simplificado;</li>
-          <li>matriz de trazabilidad entre requisitos y módulos;</li>
-          <li>cronograma de desarrollo por iteraciones.</li>
-        </ul>
-      </section>
-
-      <div class="footer">
-        Ingeniería de Software III · Informe de análisis del proyecto
-      </div>
-    </div>
-  </main>
+    <div class="footer">Proyecto final guiado · Ingeniería de Software III</div>
+  </div>
+</main>
 </body>
 </html>
-
