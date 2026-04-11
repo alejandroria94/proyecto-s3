@@ -4,6 +4,7 @@ import co.edu.matriculasservice.api.ApiResponse;
 import co.edu.matriculasservice.api.ResponseBuilder;
 import co.edu.matriculasservice.exception.BusinessException;
 import co.edu.matriculasservice.exception.NotFoundException;
+import co.edu.matriculasservice.exception.RemoteServiceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -25,6 +26,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ApiResponse<Object>> handleBusiness(BusinessException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ResponseBuilder.error(ex.getMessage(), null));
+    }
+
+    @ExceptionHandler(RemoteServiceException.class)
+    public ResponseEntity<ApiResponse<Object>> handleRemote(RemoteServiceException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
                 .body(ResponseBuilder.error(ex.getMessage(), null));
     }
 

@@ -7,6 +7,6 @@ import java.util.List;
 public interface MatriculaService {
     List<MatriculaDTO> listar();
     MatriculaDTO buscarPorId(Long id);
-    MatriculaDTO registrar(String authorization, MatriculaCreateDTO dto);
+    MatriculaDTO registrar(MatriculaCreateDTO dto);
     MatriculaDTO anular(Long id);
 }

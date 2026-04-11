@@ -27,15 +27,26 @@ public class EstudianteServiceImpl implements EstudianteService {
     }
 
     public EstudianteDTO crear(EstudianteCreateDTO dto) {
-        if (repository.existsByEmail(dto.getEmail())) throw new BusinessException("Ya existe un estudiante con ese correo");
+        if (repository.existsByEmail(dto.getEmail())) {
+            throw new BusinessException("Ya existe un estudiante con ese correo");
+        }
         Estudiante e = new Estudiante();
-        e.setNombre(dto.getNombre()); e.setApellido(dto.getApellido()); e.setEmail(dto.getEmail()); e.setEdad(dto.getEdad());
+        e.setNombre(dto.getNombre());
+        e.setApellido(dto.getApellido());
+        e.setEmail(dto.getEmail());
+        e.setEdad(dto.getEdad());
         return toDto(repository.save(e));
     }
 
     public EstudianteDTO actualizar(Long id, EstudianteCreateDTO dto) {
         Estudiante e = repository.findById(id).orElseThrow(() -> new NotFoundException("Estudiante no encontrado"));
-        e.setNombre(dto.getNombre()); e.setApellido(dto.getApellido()); e.setEmail(dto.getEmail()); e.setEdad(dto.getEdad());
+        if (repository.existsByEmailAndIdNot(dto.getEmail(), id)) {
+            throw new BusinessException("Ya existe otro estudiante con ese correo");
+        }
+        e.setNombre(dto.getNombre());
+        e.setApellido(dto.getApellido());
+        e.setEmail(dto.getEmail());
+        e.setEdad(dto.getEdad());
         return toDto(repository.save(e));
     }
 
@@ -46,7 +57,11 @@ public class EstudianteServiceImpl implements EstudianteService {
 
     private EstudianteDTO toDto(Estudiante e) {
         EstudianteDTO dto = new EstudianteDTO();
-        dto.setId(e.getId()); dto.setNombre(e.getNombre()); dto.setApellido(e.getApellido()); dto.setEmail(e.getEmail()); dto.setEdad(e.getEdad());
+        dto.setId(e.getId());
+        dto.setNombre(e.getNombre());
+        dto.setApellido(e.getApellido());
+        dto.setEmail(e.getEmail());
+        dto.setEdad(e.getEdad());
         return dto;
     }
 }

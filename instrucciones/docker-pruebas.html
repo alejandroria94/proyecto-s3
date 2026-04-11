@@ -61,7 +61,7 @@
   <div class="container">
 
 <section class="card"><h2>Propósito de esta etapa</h2><p>Un proyecto no se considera completo solo porque funciona dentro del IDE. En esta fase el estudiante debe demostrar que puede documentar la solución, levantarla de forma reproducible y probarla como un sistema integrado.</p></section>
-<section class="card"><h2>Qué debe lograr el estudiante</h2><ul><li>Generar el <code>.jar</code> de cada servicio.</li><li>Crear un <code>Dockerfile</code> por microservicio.</li><li>Construir un <code>docker-compose.yml</code> que levante todo el sistema.</li><li>Validar endpoints y roles desde Swagger.</li><li>Reunir capturas o evidencias claras.</li></ul></section>
+<section class="card"><h2>Qué debe lograr el estudiante</h2><ul><li>Generar el <code>.jar</code> de cada servicio.</li><li>Crear un <code>Dockerfile</code> por microservicio.</li><li>Construir un <code>docker-compose.yml</code> que levante todo el sistema.</li><li>Validar endpoints y roles desde Swagger.</li><li>Reunir capturas o evidencias claras.</li></ul><div class="warning"><strong>Paso obligatorio antes de Docker:</strong> los <code>Dockerfile</code> de este proyecto copian <code>target/*.jar</code>. Por eso, primero debe ejecutar <code>mvn clean package -DskipTests</code> dentro de cada servicio y luego sí usar <code>docker compose up --build</code>.</div></section>
 <section class="card"><h2>Dockerfile sugerido por servicio</h2><pre><code>FROM eclipse-temurin:21-jdk
 WORKDIR /app
 COPY target/*.jar app.jar

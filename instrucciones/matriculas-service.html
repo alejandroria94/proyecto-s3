@@ -60,7 +60,7 @@
 <main>
   <div class="container">
 
-<section class="card"><h2>Propósito del módulo</h2><p><code>matriculas-service</code> es el módulo más integrador del proyecto. Aquí el estudiante ya no resuelve un CRUD aislado, sino una operación que depende de otros servicios y que exige reglas de negocio más cuidadosas.</p><div class="success"><strong>Meta de aprendizaje:</strong> comprender por qué la arquitectura distribuida tiene sentido cuando una operación necesita validar información en más de un servicio.</div></section>
+<section class="card"><h2>Propósito del módulo</h2><p><code>matriculas-service</code> es el módulo más integrador del proyecto. Aquí el estudiante ya no resuelve un CRUD aislado, sino una operación que depende de otros servicios y que exige reglas de negocio más cuidadosas.</p><div class="success"><strong>Meta de aprendizaje:</strong> comprender por qué la arquitectura distribuida tiene sentido cuando una operación necesita validar información en más de un servicio.</div><div class="note"><strong>Refactor aplicado en este repositorio:</strong> <code>MatriculaService</code> ya no recibe el encabezado <code>Authorization</code>. El token se propaga automáticamente a Feign y los errores remotos ahora se reportan con más contexto.</div></section>
 <section class="card"><h2>Qué debe lograr el estudiante</h2><ul><li>Registrar matrículas con <code>estudianteId</code> y <code>cursoId</code>.</li><li>Consultar y listar matrículas.</li><li>Anular matrículas cambiando su estado.</li><li>Validar existencia de estudiante y curso antes de guardar.</li><li>Evitar matrículas activas duplicadas.</li></ul></section>
 <section class="card"><h2>Estructura sugerida</h2><pre><code>matriculas-service/
 ├── client/AuthClient.java
