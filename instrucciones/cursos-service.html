@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Módulo cursos-service</title>
+  <title>Guía del estudiante - cursos-service</title>
 
   <style>
     :root{
@@ -25,11 +25,14 @@
     h3{font-size:1.2rem;margin-top:24px;margin-bottom:10px}
     h4{font-size:1.02rem;margin-top:18px;margin-bottom:8px}
     p{margin:0 0 14px}
+    ul,ol{padding-left:22px}
+    li{margin-bottom:8px}
     .grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
     .grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
     .toc{background:var(--soft-2);border:1px solid var(--border);border-radius:16px;padding:20px}
     .toc ol{margin:0;padding-left:22px;columns:2;column-gap:36px}
-    .toc li{margin-bottom:8px}.toc a,.link-card a{color:var(--blue);text-decoration:none;font-weight:700}
+    .toc li{margin-bottom:8px}
+    .toc a,.link-card a{color:var(--blue);text-decoration:none;font-weight:700}
     .link-card{background:#fbfdff;border:1px solid var(--border);border-radius:16px;padding:18px;height:100%}
     .step{border-left:5px solid var(--blue);background:#fbfdff;padding:16px 18px;border-radius:12px;margin:12px 0}
     .note,.success,.warning{border-radius:14px;padding:16px 18px;margin:16px 0;border:1px solid transparent}
@@ -40,6 +43,8 @@
     th,td{border:1px solid var(--border);padding:12px;text-align:left;vertical-align:top} th{background:var(--soft);color:var(--blue)}
     .pill{display:inline-block;background:var(--soft);color:var(--blue);border:1px solid #cdd9fb;padding:6px 12px;border-radius:999px;font-size:.92rem;margin:4px 8px 4px 0;font-weight:700}
     .footer{text-align:center;color:var(--muted);padding:10px 0 0;font-size:.95rem}
+    .btn{display:inline-block;background:var(--blue);color:#fff;text-decoration:none;padding:12px 18px;border-radius:12px;font-weight:700}
+    .btn.secondary{background:#fff;color:var(--blue);border:1px solid var(--border)}
     @media (max-width: 920px){.grid-2,.grid-3{grid-template-columns:1fr}.toc ol{columns:1}}
   </style>
 
@@ -49,57 +54,33 @@
   <div class="container">
     <a class="back" href="index.html">← Volver</a>
     <h1>Módulo cursos-service</h1>
-    <p>Página explicativa del servicio de cursos y del valor de repetir el patrón arquitectónico con una nueva entidad.</p>
+    <p>Guía de trabajo para construir el servicio de cursos siguiendo el patrón del curso.</p>
   </div>
 </header>
 <main>
   <div class="container">
 
-<section class="card">
-  <h2>Propósito del módulo</h2>
-  <p>El servicio de cursos cumple una función estratégica en el proyecto: demostrar que el equipo no depende de copiar un CRUD ya existente, sino que puede construir uno nuevo siguiendo el mismo patrón arquitectónico. Este servicio es la prueba de que el estudiante comprendió el molde técnico y puede reproducirlo con otra entidad.</p>
-</section>
-<section class="card">
-  <h2>Responsabilidades</h2>
-  <ul>
-    <li>Registrar cursos con un código único.</li>
-    <li>Listar y consultar la oferta académica.</li>
-    <li>Actualizar los datos de un curso.</li>
-    <li>Eliminar cursos según permisos.</li>
-  </ul>
-</section>
-<section class="card">
-  <h2>Descripción de la entidad</h2>
-  <p>La entidad <strong>Curso</strong> representa una unidad académica ofertada por la institución. Además del nombre y la descripción, conviene incluir un código que identifique el curso de forma única y un docente responsable para dar contexto a la información.</p>
-  <pre><code>@Entity
-public class Curso {
-    private Long id;
-    private String codigo;
-    private String nombre;
-    private String descripcion;
-    private Integer creditos;
-    private String docenteResponsable;
-}</code></pre>
-</section>
-<section class="card">
-  <h2>Aprendizajes que refuerza</h2>
-  <ul>
-    <li>Diseño de DTO para entrada y salida.</li>
-    <li>Validaciones de unicidad y obligatoriedad.</li>
-    <li>Repetición disciplinada del patrón por capas.</li>
-    <li>Uso de las mismas convenciones del resto del sistema.</li>
-  </ul>
-</section>
-<section class="card">
-  <h2>Puntos que deben quedar bien explicados en clase</h2>
-  <ul>
-    <li>Por qué el código del curso debe ser único.</li>
-    <li>Por qué conviene mantener el DTO separado de la entidad.</li>
-    <li>Cómo se reutiliza el mismo mecanismo de seguridad ya aplicado en estudiantes-service.</li>
-  </ul>
-</section>
+<section class="card"><h2>Propósito del módulo</h2><p>Este servicio busca demostrar que el estudiante puede repetir el patrón técnico del curso con una entidad diferente. El valor pedagógico de <code>cursos-service</code> está en aplicar la misma arquitectura, pero sin depender de copiar sin entender.</p><div class="success"><strong>Meta de aprendizaje:</strong> construir un segundo CRUD completo manteniendo consistencia técnica y seguridad.</div></section>
+<section class="card"><h2>Qué debe lograr el estudiante</h2><ul><li>Registrar cursos con código único.</li><li>Consultar y listar la oferta académica.</li><li>Actualizar y eliminar cursos.</li><li>Proteger los endpoints con token y roles.</li></ul></section>
+<section class="card"><h2>Estructura sugerida</h2><pre><code>cursos-service/
+├── client/AuthClient.java
+├── controller/CursoController.java
+├── handler/CursoHandler.java
+├── service/CursoService.java
+├── service/CursoServiceImpl.java
+├── repository/CursoRepository.java
+├── model/Curso.java
+├── dto/CursoDTO.java
+├── dto/CursoCreateDTO.java
+└── security/AuthValidationFilter.java</code></pre></section>
+<section class="card"><h2>Pasos guiados</h2><div class="step"><strong>1.</strong> Cree el proyecto base con la misma estructura de los otros servicios.</div><div class="step"><strong>2.</strong> Diseñe la entidad <code>Curso</code> con <code>codigo</code>, <code>nombre</code>, <code>descripcion</code>, <code>creditos</code> y <code>docenteResponsable</code>.</div><div class="step"><strong>3.</strong> Cree los DTO de entrada y salida.</div><div class="step"><strong>4.</strong> Implemente repository, service, handler y controller.</div><div class="step"><strong>5.</strong> Valide el token con <code>auth-service</code>.</div><div class="step"><strong>6.</strong> Permita consulta a todos los roles definidos y escritura solo a <code>ADMIN</code>.</div><div class="step"><strong>7.</strong> Verifique el servicio en Swagger.</div></section>
+<section class="card"><h2>Reglas mínimas de negocio</h2><ul><li>No registrar dos cursos con el mismo código.</li><li>Validar créditos mayores que cero.</li><li>Retornar mensaje claro cuando el curso no exista.</li><li>Proteger escritura con rol <code>ADMIN</code>.</li></ul></section>
+<section class="card"><h2>Endpoints mínimos</h2><table><thead><tr><th>Endpoint</th><th>Método</th><th>Rol esperado</th></tr></thead><tbody><tr><td><code>/api/cursos</code></td><td>GET</td><td>ADMIN, DOCENTE, ESTUDIANTE</td></tr><tr><td><code>/api/cursos/{id}</code></td><td>GET</td><td>ADMIN, DOCENTE, ESTUDIANTE</td></tr><tr><td><code>/api/cursos</code></td><td>POST</td><td>ADMIN</td></tr><tr><td><code>/api/cursos/{id}</code></td><td>PUT</td><td>ADMIN</td></tr><tr><td><code>/api/cursos/{id}</code></td><td>DELETE</td><td>ADMIN</td></tr></tbody></table></section>
+<section class="card"><h2>Evidencias esperadas</h2><ol><li>Listado de cursos.</li><li>Creación exitosa de un curso.</li><li>Intento fallido de escritura con rol no autorizado.</li><li>Consulta o actualización de un curso específico.</li></ol></section>
+<section class="card"><h2>Errores comunes</h2><div class="warning"><ul><li>No validar la duplicidad del código.</li><li>Permitir modificaciones a cualquier rol.</li><li>Copiar el servicio anterior sin adaptar nombres ni reglas.</li><li>Dejar la documentación incompleta.</li></ul></div></section>
+<section class="card"><h2>Checklist del módulo</h2><ul><li>CRUD completo de cursos.</li><li>Token obligatorio y roles correctos.</li><li>Regla de código único implementada.</li><li>Swagger funcional.</li><li>Evidencias listas.</li></ul></section>
 
-    <div class="footer">Proyecto final guiado · Ingeniería de Software III</div>
+    <div class="footer">Ingeniería de Software III · Proyecto final guiado</div>
   </div>
 </main>
 </body>

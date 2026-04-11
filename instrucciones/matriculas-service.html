@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Módulo matriculas-service</title>
+  <title>Guía del estudiante - matriculas-service</title>
 
   <style>
     :root{
@@ -25,11 +25,14 @@
     h3{font-size:1.2rem;margin-top:24px;margin-bottom:10px}
     h4{font-size:1.02rem;margin-top:18px;margin-bottom:8px}
     p{margin:0 0 14px}
+    ul,ol{padding-left:22px}
+    li{margin-bottom:8px}
     .grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
     .grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
     .toc{background:var(--soft-2);border:1px solid var(--border);border-radius:16px;padding:20px}
     .toc ol{margin:0;padding-left:22px;columns:2;column-gap:36px}
-    .toc li{margin-bottom:8px}.toc a,.link-card a{color:var(--blue);text-decoration:none;font-weight:700}
+    .toc li{margin-bottom:8px}
+    .toc a,.link-card a{color:var(--blue);text-decoration:none;font-weight:700}
     .link-card{background:#fbfdff;border:1px solid var(--border);border-radius:16px;padding:18px;height:100%}
     .step{border-left:5px solid var(--blue);background:#fbfdff;padding:16px 18px;border-radius:12px;margin:12px 0}
     .note,.success,.warning{border-radius:14px;padding:16px 18px;margin:16px 0;border:1px solid transparent}
@@ -40,6 +43,8 @@
     th,td{border:1px solid var(--border);padding:12px;text-align:left;vertical-align:top} th{background:var(--soft);color:var(--blue)}
     .pill{display:inline-block;background:var(--soft);color:var(--blue);border:1px solid #cdd9fb;padding:6px 12px;border-radius:999px;font-size:.92rem;margin:4px 8px 4px 0;font-weight:700}
     .footer{text-align:center;color:var(--muted);padding:10px 0 0;font-size:.95rem}
+    .btn{display:inline-block;background:var(--blue);color:#fff;text-decoration:none;padding:12px 18px;border-radius:12px;font-weight:700}
+    .btn.secondary{background:#fff;color:var(--blue);border:1px solid var(--border)}
     @media (max-width: 920px){.grid-2,.grid-3{grid-template-columns:1fr}.toc ol{columns:1}}
   </style>
 
@@ -49,67 +54,35 @@
   <div class="container">
     <a class="back" href="index.html">← Volver</a>
     <h1>Módulo matriculas-service</h1>
-    <p>Guía explicativa del servicio más integrador del proyecto, con reglas de negocio y comunicación entre servicios.</p>
+    <p>Guía de trabajo para el servicio integrador con reglas de negocio y consumo entre servicios.</p>
   </div>
 </header>
 <main>
   <div class="container">
 
-<section class="card">
-  <h2>Propósito del módulo</h2>
-  <p>Este es el módulo más integrador del proyecto. Aquí el estudiante ya no solo expone un CRUD, sino que implementa validaciones de negocio que dependen de otros microservicios. Por eso <code>matriculas-service</code> representa el momento en que la arquitectura distribuida deja de ser teórica y empieza a justificarse por la necesidad real de coordinación.</p>
-</section>
-<section class="card">
-  <h2>Qué debe validar antes de registrar una matrícula</h2>
-  <ul>
-    <li>Que el estudiante exista en <code>estudiantes-service</code>.</li>
-    <li>Que el curso exista en <code>cursos-service</code>.</li>
-    <li>Que no exista ya una matrícula activa para el mismo estudiante y curso.</li>
-  </ul>
-  <div class="warning"><strong>Valor pedagógico:</strong> estas validaciones permiten explicar por qué OpenFeign tiene sentido y cómo los microservicios colaboran sin compartir directamente sus bases de datos.</div>
-</section>
-<section class="card">
-  <h2>Secuencia de registro</h2>
-  <div class="step"><strong>1.</strong> Llega una solicitud con <code>estudianteId</code> y <code>cursoId</code>.</div>
-  <div class="step"><strong>2.</strong> El servicio consulta a estudiantes-service para verificar la existencia del estudiante.</div>
-  <div class="step"><strong>3.</strong> El servicio consulta a cursos-service para verificar la existencia del curso.</div>
-  <div class="step"><strong>4.</strong> Revisa su propia base para garantizar que no haya una matrícula activa duplicada.</div>
-  <div class="step"><strong>5.</strong> Si todo es correcto, registra la matrícula con estado ACTIVA.</div>
-</section>
-<section class="card">
-  <h2>Estructura recomendada</h2>
-  <pre><code>client/AuthClient.java
-client/EstudiantesClient.java
-client/CursosClient.java
-service/MatriculaService.java
-service/MatriculaServiceImpl.java
-repository/MatriculaRepository.java
-model/Matricula.java
-controller/MatriculaController.java
-handler/MatriculaHandler.java</code></pre>
-</section>
-<section class="card">
-  <h2>Modelo sugerido</h2>
-  <pre><code>@Entity
-public class Matricula {
-    private Long id;
-    private Long estudianteId;
-    private Long cursoId;
-    private LocalDate fechaMatricula;
-    private String estado;
-}</code></pre>
-</section>
-<section class="card">
-  <h2>Qué debe explicar el equipo al presentar</h2>
-  <ul>
-    <li>Cómo se integran los servicios sin compartir tablas.</li>
-    <li>Qué errores se retornan cuando estudiante o curso no existen.</li>
-    <li>Qué ventaja tiene controlar duplicidad desde el servicio de matrículas.</li>
-    <li>Por qué esta parte del proyecto representa una lógica de negocio más realista.</li>
-  </ul>
-</section>
+<section class="card"><h2>Propósito del módulo</h2><p><code>matriculas-service</code> es el módulo más integrador del proyecto. Aquí el estudiante ya no resuelve un CRUD aislado, sino una operación que depende de otros servicios y que exige reglas de negocio más cuidadosas.</p><div class="success"><strong>Meta de aprendizaje:</strong> comprender por qué la arquitectura distribuida tiene sentido cuando una operación necesita validar información en más de un servicio.</div></section>
+<section class="card"><h2>Qué debe lograr el estudiante</h2><ul><li>Registrar matrículas con <code>estudianteId</code> y <code>cursoId</code>.</li><li>Consultar y listar matrículas.</li><li>Anular matrículas cambiando su estado.</li><li>Validar existencia de estudiante y curso antes de guardar.</li><li>Evitar matrículas activas duplicadas.</li></ul></section>
+<section class="card"><h2>Estructura sugerida</h2><pre><code>matriculas-service/
+├── client/AuthClient.java
+├── client/EstudiantesClient.java
+├── client/CursosClient.java
+├── controller/MatriculaController.java
+├── handler/MatriculaHandler.java
+├── service/MatriculaService.java
+├── service/MatriculaServiceImpl.java
+├── repository/MatriculaRepository.java
+├── model/Matricula.java
+├── dto/MatriculaDTO.java
+├── dto/MatriculaCreateDTO.java
+└── security/AuthValidationFilter.java</code></pre></section>
+<section class="card"><h2>Secuencia de registro</h2><div class="step"><strong>1.</strong> Llega una solicitud con <code>estudianteId</code> y <code>cursoId</code>.</div><div class="step"><strong>2.</strong> El servicio consulta <code>estudiantes-service</code> para verificar el estudiante.</div><div class="step"><strong>3.</strong> El servicio consulta <code>cursos-service</code> para verificar el curso.</div><div class="step"><strong>4.</strong> Revisa si ya existe una matrícula activa para la misma combinación.</div><div class="step"><strong>5.</strong> Si todo es válido, guarda la matrícula con estado <code>ACTIVA</code>.</div></section>
+<section class="card"><h2>Reglas mínimas de negocio</h2><ul><li>No registrar una matrícula si el estudiante no existe.</li><li>No registrar una matrícula si el curso no existe.</li><li>No duplicar una matrícula activa para el mismo estudiante y curso.</li><li>La anulación debe cambiar el estado y no necesariamente eliminar físicamente el registro.</li></ul></section>
+<section class="card"><h2>Endpoints mínimos</h2><table><thead><tr><th>Endpoint</th><th>Método</th><th>Rol esperado</th></tr></thead><tbody><tr><td><code>/api/matriculas</code></td><td>GET</td><td>ADMIN, DOCENTE</td></tr><tr><td><code>/api/matriculas/{id}</code></td><td>GET</td><td>ADMIN, DOCENTE</td></tr><tr><td><code>/api/matriculas</code></td><td>POST</td><td>ADMIN</td></tr><tr><td><code>/api/matriculas/{id}/anular</code></td><td>PUT</td><td>ADMIN</td></tr></tbody></table></section>
+<section class="card"><h2>Evidencias esperadas</h2><ol><li>Registro exitoso de una matrícula.</li><li>Intento fallido porque el estudiante no existe.</li><li>Intento fallido porque el curso no existe.</li><li>Intento fallido por duplicidad.</li><li>Anulación correcta de una matrícula.</li></ol></section>
+<section class="card"><h2>Errores comunes</h2><div class="warning"><ul><li>Registrar sin validar estudiante y curso.</li><li>No manejar errores de integración entre servicios.</li><li>Permitir duplicidad de matrículas activas.</li><li>Ubicar toda la lógica en el controlador.</li></ul></div></section>
+<section class="card"><h2>Checklist del módulo</h2><ul><li>Se consumen correctamente estudiantes-service y cursos-service.</li><li>Existen reglas de negocio claras en la capa service.</li><li>El token es obligatorio.</li><li>Se probaron casos positivos y negativos.</li><li>Swagger documenta correctamente el módulo.</li></ul></section>
 
-    <div class="footer">Proyecto final guiado · Ingeniería de Software III</div>
+    <div class="footer">Ingeniería de Software III · Proyecto final guiado</div>
   </div>
 </main>
 </body>
