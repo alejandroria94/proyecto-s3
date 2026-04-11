@@ -1,6 +1,7 @@
 package co.edu.authservice.controller;
 
-import co.edu.authservice.api.ApiErrorResponse;
+
+import api.ApiErrorResponse;
 import co.edu.authservice.exception.InvalidCredentialsException;
 import co.edu.authservice.exception.InvalidTokenException;
 import jakarta.servlet.http.HttpServletRequest;
