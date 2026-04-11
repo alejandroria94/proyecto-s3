@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Módulo auth-service</title>
+
+  <style>
+    :root{
+      --blue:#1f3c88;--blue-dark:#142a61;--soft:#edf3ff;--soft-2:#f8fbff;--border:#dbe4f3;
+      --bg:#f5f7fb;--text:#1f2937;--muted:#4b5563;--white:#fff;--shadow:0 10px 28px rgba(31,60,136,.08);
+      --radius:18px;--code:#eef2f7;--ok:#0f766e;--warn:#b45309;
+    }
+    *{box-sizing:border-box} html{scroll-behavior:smooth}
+    body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text);line-height:1.65}
+    .container{width:min(1180px,calc(100% - 32px));margin:0 auto}
+    header.hero{background:linear-gradient(135deg,var(--blue),var(--blue-dark));color:#fff;padding:44px 0 30px;box-shadow:var(--shadow)}
+    .back{display:inline-block;color:#dbe7ff;text-decoration:none;font-weight:bold;margin-bottom:16px}
+    h1{margin:0 0 12px;font-size:clamp(1.9rem,4vw,3rem);line-height:1.15}
+    header.hero p{margin:0;max-width:980px;color:#edf2ff}
+    main{padding:28px 0 52px}
+    .card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);margin-bottom:22px}
+    h2,h3,h4{color:var(--blue);margin-top:0}
+    h2{font-size:1.65rem;border-bottom:3px solid var(--soft);padding-bottom:10px;margin-bottom:18px}
+    h3{font-size:1.2rem;margin-top:24px;margin-bottom:10px}
+    h4{font-size:1.02rem;margin-top:18px;margin-bottom:8px}
+    p{margin:0 0 14px}
+    .grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+    .grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+    .toc{background:var(--soft-2);border:1px solid var(--border);border-radius:16px;padding:20px}
+    .toc ol{margin:0;padding-left:22px;columns:2;column-gap:36px}
+    .toc li{margin-bottom:8px}.toc a,.link-card a{color:var(--blue);text-decoration:none;font-weight:700}
+    .link-card{background:#fbfdff;border:1px solid var(--border);border-radius:16px;padding:18px;height:100%}
+    .step{border-left:5px solid var(--blue);background:#fbfdff;padding:16px 18px;border-radius:12px;margin:12px 0}
+    .note,.success,.warning{border-radius:14px;padding:16px 18px;margin:16px 0;border:1px solid transparent}
+    .note{background:#eff6ff;border-color:#bfdbfe}.success{background:#ecfdf5;border-color:#a7f3d0}.warning{background:#fff7ed;border-color:#fdba74}
+    pre{background:var(--code);color:#111827;border:1px solid #d8e0ea;border-radius:14px;padding:16px;overflow:auto;font-size:.92rem;line-height:1.5;margin:14px 0 18px}
+    code{font-family:Consolas,Monaco,'Courier New',monospace}
+    table{width:100%;border-collapse:collapse;margin:14px 0 18px;background:#fff;border-radius:12px;overflow:hidden}
+    th,td{border:1px solid var(--border);padding:12px;text-align:left;vertical-align:top} th{background:var(--soft);color:var(--blue)}
+    .pill{display:inline-block;background:var(--soft);color:var(--blue);border:1px solid #cdd9fb;padding:6px 12px;border-radius:999px;font-size:.92rem;margin:4px 8px 4px 0;font-weight:700}
+    .footer{text-align:center;color:var(--muted);padding:10px 0 0;font-size:.95rem}
+    @media (max-width: 920px){.grid-2,.grid-3{grid-template-columns:1fr}.toc ol{columns:1}}
+  </style>
+
+</head>
+<body>
+<header class="hero">
+  <div class="container">
+    <a class="back" href="index.html">← Volver</a>
+    <h1>Módulo auth-service</h1>
+    <p>Descripción funcional y pedagógica del servicio de autenticación, con su flujo, responsabilidades y código base.</p>
+  </div>
+</header>
+<main>
+  <div class="container">
+
+<section class="card">
+  <h2>Propósito del módulo</h2>
+  <p><code>auth-service</code> existe para separar la autenticación del resto de la lógica del sistema. En vez de que cada microservicio tenga que verificar usuarios y contraseñas por su cuenta, toda esa responsabilidad se centraliza en un solo servicio. Esto reduce duplicidad, mejora la coherencia del sistema y obliga al estudiante a pensar en seguridad como un componente transversal.</p>
+</section>
+<section class="card">
+  <h2>Qué debe hacer este servicio</h2>
+  <ul>
+    <li>Recibir credenciales de acceso.</li>
+    <li>Buscar el usuario registrado.</li>
+    <li>Comparar la contraseña con BCrypt.</li>
+    <li>Generar un JWT con usuario y rol.</li>
+    <li>Exponer un endpoint para validar el token.</li>
+  </ul>
+  <div class="note"><strong>Sentido pedagógico:</strong> este servicio permite explicar de forma concreta la diferencia entre autenticación y autorización.</div>
+</section>
+<section class="card">
+  <h2>Estructura recomendada</h2>
+  <pre><code>co.edu.authservice
+├── controller/AuthController.java
+├── dto/LoginRequest.java
+├── dto/LoginResponse.java
+├── dto/TokenValidationResponse.java
+├── model/Usuario.java
+├── repository/UsuarioRepository.java
+├── util/JwtUtils.java
+├── config/SecurityConfig.java
+├── config/DataSeeder.java
+└── config/OpenApiConfig.java</code></pre>
+</section>
+<section class="card">
+  <h2>Explicación del flujo</h2>
+  <div class="step"><strong>1.</strong> El cliente envía usuario y contraseña al endpoint <code>/auth/login</code>.</div>
+  <div class="step"><strong>2.</strong> El controlador delega la búsqueda del usuario y la comparación de contraseña.</div>
+  <div class="step"><strong>3.</strong> Si la contraseña es correcta, el servicio genera el token.</div>
+  <div class="step"><strong>4.</strong> El token se devuelve al cliente y luego se usa como <code>Bearer Token</code> en los demás servicios.</div>
+  <div class="step"><strong>5.</strong> Cuando otro microservicio necesita verificar el token, consume <code>/auth/validate</code>.</div>
+</section>
+<section class="card">
+  <h2>Código base clave</h2>
+  <h3>Controlador</h3>
+  <pre><code>@RestController
+@RequestMapping("/auth")
+public class AuthController {
+    // login y validate
+}</code></pre>
+  <h3>Entidad Usuario</h3>
+  <pre><code>@Entity
+@Table(name = "usuarios")
+public class Usuario {
+    private Long id;
+    private String username;
+    private String password;
+    private String role;
+}</code></pre>
+  <h3>Seeder</h3>
+  <pre><code>admin / admin123 / ADMIN
+docente / docente123 / DOCENTE
+estudiante / estudiante123 / ESTUDIANTE</code></pre>
+</section>
+<section class="card">
+  <h2>Buenas prácticas que deben explicar los estudiantes</h2>
+  <ul>
+    <li>Por qué la contraseña no se guarda en texto plano.</li>
+    <li>Qué información conviene incluir en el JWT.</li>
+    <li>Por qué los demás servicios no deberían encargarse del login.</li>
+    <li>Qué ocurriría si el token caduca o es alterado.</li>
+  </ul>
+</section>
+
+    <div class="footer">Proyecto final guiado · Ingeniería de Software III</div>
+  </div>
+</main>
+</body>
+</html>

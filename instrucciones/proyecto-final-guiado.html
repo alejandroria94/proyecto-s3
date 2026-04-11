@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guía General del Proyecto Final</title>
+
+  <style>
+    :root{
+      --blue:#1f3c88;--blue-dark:#142a61;--soft:#edf3ff;--soft-2:#f8fbff;--border:#dbe4f3;
+      --bg:#f5f7fb;--text:#1f2937;--muted:#4b5563;--white:#fff;--shadow:0 10px 28px rgba(31,60,136,.08);
+      --radius:18px;--code:#eef2f7;--ok:#0f766e;--warn:#b45309;
+    }
+    *{box-sizing:border-box} html{scroll-behavior:smooth}
+    body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text);line-height:1.65}
+    .container{width:min(1180px,calc(100% - 32px));margin:0 auto}
+    header.hero{background:linear-gradient(135deg,var(--blue),var(--blue-dark));color:#fff;padding:44px 0 30px;box-shadow:var(--shadow)}
+    .back{display:inline-block;color:#dbe7ff;text-decoration:none;font-weight:bold;margin-bottom:16px}
+    h1{margin:0 0 12px;font-size:clamp(1.9rem,4vw,3rem);line-height:1.15}
+    header.hero p{margin:0;max-width:980px;color:#edf2ff}
+    main{padding:28px 0 52px}
+    .card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);margin-bottom:22px}
+    h2,h3,h4{color:var(--blue);margin-top:0}
+    h2{font-size:1.65rem;border-bottom:3px solid var(--soft);padding-bottom:10px;margin-bottom:18px}
+    h3{font-size:1.2rem;margin-top:24px;margin-bottom:10px}
+    h4{font-size:1.02rem;margin-top:18px;margin-bottom:8px}
+    p{margin:0 0 14px}
+    .grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+    .grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+    .toc{background:var(--soft-2);border:1px solid var(--border);border-radius:16px;padding:20px}
+    .toc ol{margin:0;padding-left:22px;columns:2;column-gap:36px}
+    .toc li{margin-bottom:8px}.toc a,.link-card a{color:var(--blue);text-decoration:none;font-weight:700}
+    .link-card{background:#fbfdff;border:1px solid var(--border);border-radius:16px;padding:18px;height:100%}
+    .step{border-left:5px solid var(--blue);background:#fbfdff;padding:16px 18px;border-radius:12px;margin:12px 0}
+    .note,.success,.warning{border-radius:14px;padding:16px 18px;margin:16px 0;border:1px solid transparent}
+    .note{background:#eff6ff;border-color:#bfdbfe}.success{background:#ecfdf5;border-color:#a7f3d0}.warning{background:#fff7ed;border-color:#fdba74}
+    pre{background:var(--code);color:#111827;border:1px solid #d8e0ea;border-radius:14px;padding:16px;overflow:auto;font-size:.92rem;line-height:1.5;margin:14px 0 18px}
+    code{font-family:Consolas,Monaco,'Courier New',monospace}
+    table{width:100%;border-collapse:collapse;margin:14px 0 18px;background:#fff;border-radius:12px;overflow:hidden}
+    th,td{border:1px solid var(--border);padding:12px;text-align:left;vertical-align:top} th{background:var(--soft);color:var(--blue)}
+    .pill{display:inline-block;background:var(--soft);color:var(--blue);border:1px solid #cdd9fb;padding:6px 12px;border-radius:999px;font-size:.92rem;margin:4px 8px 4px 0;font-weight:700}
+    .footer{text-align:center;color:var(--muted);padding:10px 0 0;font-size:.95rem}
+    @media (max-width: 920px){.grid-2,.grid-3{grid-template-columns:1fr}.toc ol{columns:1}}
+  </style>
+
+</head>
+<body>
+<header class="hero">
+  <div class="container">
+    <a class="back" href="index.html">← Volver</a>
+    <h1>Guía General del Proyecto Final</h1>
+    <p>Documento principal con la descripción completa del caso, las fases, la lógica de evaluación y el alcance del proyecto.</p>
+  </div>
+</header>
+<main>
+  <div class="container">
+
+<section class="card">
+  <h2>Contenido</h2>
+  <div class="toc">
+    <ol>
+      <li><a href="#proposito">Propósito</a></li>
+      <li><a href="#caso">Caso propuesto</a></li>
+      <li><a href="#competencias">Competencias</a></li>
+      <li><a href="#alcance">Alcance funcional</a></li>
+      <li><a href="#arquitectura">Arquitectura esperada</a></li>
+      <li><a href="#secuencia">Secuencia guiada de desarrollo</a></li>
+      <li><a href="#roles">Roles y seguridad</a></li>
+      <li><a href="#datos">Modelo de datos sugerido</a></li>
+      <li><a href="#entregables">Entregables</a></li>
+      <li><a href="#rubrica">Rúbrica sugerida</a></li>
+      <li><a href="#checklist">Checklist final</a></li>
+    </ol>
+  </div>
+</section>
+<section class="card" id="proposito">
+  <h2>1) Propósito del proyecto final</h2>
+  <p>El propósito del proyecto final es consolidar los aprendizajes del curso en una sola solución integradora. Mientras en los laboratorios los estudiantes desarrollan partes aisladas del problema, en este proyecto deben demostrar que comprenden cómo se articula una arquitectura distribuida completa, desde la autenticación hasta la exposición de servicios protegidos.</p>
+  <p>El proyecto final busca además que el estudiante deje de ver el código como piezas independientes y comience a pensar en el sistema como un conjunto de responsabilidades coordinadas. Por eso se trabaja con cuatro microservicios, cada uno con un papel claro y con reglas de acceso específicas.</p>
+</section>
+<section class="card" id="caso">
+  <h2>2) Caso propuesto</h2>
+  <p>Una institución académica necesita una plataforma básica para administrar estudiantes, cursos y matrículas. La institución ya identificó que no es conveniente colocar toda la lógica en un solo servicio porque desea separar responsabilidades y controlar mejor la seguridad. Por ello decide implementar un servicio especializado en autenticación y otros tres servicios de negocio.</p>
+  <p>La solución debe permitir que un usuario inicie sesión, obtenga un token y use dicho token para acceder a operaciones autorizadas según su rol. Un administrador podrá gestionar entidades del sistema, un docente podrá consultar información académica y un estudiante tendrá acceso restringido a su información y a la oferta de cursos.</p>
+</section>
+<section class="card" id="competencias">
+  <h2>3) Competencias que se evalúan</h2>
+  <div class="grid-2">
+    <div>
+      <h3>Técnicas</h3>
+      <ul>
+        <li>Construcción de APIs REST con Spring Boot.</li>
+        <li>Uso de DTO, handler, service, repository y model.</li>
+        <li>Validación de datos y manejo centralizado de excepciones.</li>
+        <li>Seguridad con BCrypt y JWT.</li>
+        <li>Comunicación entre microservicios mediante OpenFeign.</li>
+        <li>Documentación con Swagger/OpenAPI.</li>
+        <li>Despliegue reproducible con Docker.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Formativas</h3>
+      <ul>
+        <li>Comprender por qué se separan los servicios por responsabilidad.</li>
+        <li>Justificar las decisiones arquitectónicas del equipo.</li>
+        <li>Organizar un proyecto real en fases de construcción progresiva.</li>
+        <li>Entregar una solución clara, explicable y verificable.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+<section class="card" id="alcance">
+  <h2>4) Alcance funcional mínimo</h2>
+  <table>
+    <thead><tr><th>Servicio</th><th>Objetivo</th><th>Funciones mínimas</th></tr></thead>
+    <tbody>
+      <tr><td><strong>auth-service</strong></td><td>Centralizar la autenticación</td><td>Login, validación de token, carga de usuarios con contraseña cifrada y rol.</td></tr>
+      <tr><td><strong>estudiantes-service</strong></td><td>Administrar estudiantes</td><td>Crear, listar, consultar, actualizar y eliminar estudiantes.</td></tr>
+      <tr><td><strong>cursos-service</strong></td><td>Administrar cursos</td><td>Crear, listar, consultar, actualizar y eliminar cursos.</td></tr>
+      <tr><td><strong>matriculas-service</strong></td><td>Registrar matrículas</td><td>Registrar, listar, consultar y anular matrículas, validando estudiante y curso existentes.</td></tr>
+    </tbody>
+  </table>
+  <div class="note"><strong>Importante:</strong> el alcance mínimo no impide que los equipos agreguen mejoras, pero primero deben asegurar la estabilidad de lo obligatorio.</div>
+</section>
+<section class="card" id="arquitectura">
+  <h2>5) Arquitectura esperada</h2>
+  <p>Cada microservicio debe conservar la estructura trabajada durante el curso:</p>
+  <pre><code>controller → handler → service → repository → model</code></pre>
+  <p>Esta estructura no es decorativa. Su intención es que el controlador se mantenga liviano, el handler coordine la interacción, el service concentre las reglas de negocio, el repository gestione la persistencia y el model represente el dato de dominio.</p>
+  <p>Además, cada servicio de negocio debe tener su propio ciclo de vida, su configuración, su documentación Swagger y su archivo Dockerfile. Así se refuerza la idea de que un microservicio es una unidad autónoma, aunque participe en un sistema mayor.</p>
+</section>
+<section class="card" id="secuencia">
+  <h2>6) Secuencia guiada de desarrollo</h2>
+  <div class="step"><strong>Paso 1.</strong> Verifique que el laboratorio base funcione. Si el equipo no logra autenticar y proteger un endpoint, avanzar al proyecto final generará errores en cadena.</div>
+  <div class="step"><strong>Paso 2.</strong> Organice el repositorio general y cree las carpetas vacías de los cuatro servicios. Esto obliga al estudiante a entender desde el inicio la división física de la solución.</div>
+  <div class="step"><strong>Paso 3.</strong> Implemente primero <code>auth-service</code>. Es la base de seguridad del resto del sistema.</div>
+  <div class="step"><strong>Paso 4.</strong> Implemente <code>estudiantes-service</code> reutilizando el CRUD trabajado en clase y agregando validación del token.</div>
+  <div class="step"><strong>Paso 5.</strong> Implemente <code>cursos-service</code> repitiendo el patrón por capas. Esto evidencia que el estudiante ya domina la plantilla técnica del curso.</div>
+  <div class="step"><strong>Paso 6.</strong> Implemente <code>matriculas-service</code>, ya que depende de que los servicios de estudiantes y cursos existan y estén accesibles.</div>
+  <div class="step"><strong>Paso 7.</strong> Documente con Swagger, cree el Dockerfile de cada servicio y finalmente levante el sistema con Docker Compose.</div>
+</section>
+<section class="card" id="roles">
+  <h2>7) Roles y seguridad</h2>
+  <p>La seguridad no solo consiste en verificar si el token es válido. También implica decidir qué operaciones puede ejecutar cada usuario. Esa capa de autorización da sentido práctico al uso de roles.</p>
+  <table>
+    <thead><tr><th>Rol</th><th>Puede hacer</th><th>No debería hacer</th></tr></thead>
+    <tbody>
+      <tr><td>ADMIN</td><td>Gestionar estudiantes, cursos y matrículas; consultar toda la información.</td><td>—</td></tr>
+      <tr><td>DOCENTE</td><td>Consultar estudiantes, cursos y matrículas.</td><td>Crear usuarios, modificar credenciales o eliminar información crítica.</td></tr>
+      <tr><td>ESTUDIANTE</td><td>Consultar cursos y sus propias matrículas.</td><td>Administrar estudiantes o cursos.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="card" id="datos">
+  <h2>8) Modelo de datos sugerido</h2>
+  <div class="grid-3">
+    <div class="link-card"><h3>Usuario</h3><p><strong>Atributos:</strong> id, username, password, role.</p><p>Representa la identidad con la que el sistema autentica a cada actor.</p></div>
+    <div class="link-card"><h3>Estudiante</h3><p><strong>Atributos:</strong> id, nombre, apellido, email, edad.</p><p>Representa al estudiante como entidad académica gestionable.</p></div>
+    <div class="link-card"><h3>Curso</h3><p><strong>Atributos:</strong> id, codigo, nombre, descripcion, creditos, docenteResponsable.</p><p>Representa la oferta académica disponible.</p></div>
+  </div>
+  <div class="link-card" style="margin-top:18px"><h3>Matrícula</h3><p><strong>Atributos:</strong> id, estudianteId, cursoId, fechaMatricula, estado.</p><p>Representa la relación académica entre un estudiante y un curso. No debe registrarse si alguna de las entidades referenciadas no existe.</p></div>
+</section>
+<section class="card" id="entregables">
+  <h2>9) Entregables</h2>
+  <ul>
+    <li>Repositorio con los cuatro microservicios y su estructura por capas.</li>
+    <li>README explicando arquitectura, puertos, rutas y pasos de ejecución.</li>
+    <li>Swagger funcional en todos los servicios.</li>
+    <li>Dockerfile por servicio.</li>
+    <li>docker-compose.yml funcional.</li>
+    <li>Evidencias de pruebas exitosas y fallidas.</li>
+  </ul>
+</section>
+<section class="card" id="rubrica">
+  <h2>10) Rúbrica sugerida</h2>
+  <table>
+    <thead><tr><th>Criterio</th><th>Puntaje</th><th>Qué se espera</th></tr></thead>
+    <tbody>
+      <tr><td>Arquitectura y organización</td><td>20</td><td>Estructura clara por capas, nombres coherentes y separación de responsabilidades.</td></tr>
+      <tr><td>Seguridad</td><td>20</td><td>Login funcional, token válido, protección de endpoints y uso de roles.</td></tr>
+      <tr><td>Lógica de negocio</td><td>20</td><td>CRUD completos y reglas de matrícula correctamente aplicadas.</td></tr>
+      <tr><td>Comunicación entre servicios</td><td>15</td><td>OpenFeign implementado y validaciones remotas funcionando.</td></tr>
+      <tr><td>Documentación y pruebas</td><td>15</td><td>Swagger organizado, evidencias claras y README completo.</td></tr>
+      <tr><td>Dockerización</td><td>10</td><td>Servicios compilables y levantables con Docker Compose.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="card" id="checklist">
+  <h2>11) Checklist final del estudiante</h2>
+  <ul>
+    <li>¿El login genera un token real?</li>
+    <li>¿Los servicios protegidos rechazan peticiones sin token?</li>
+    <li>¿Los servicios aceptan peticiones con token válido?</li>
+    <li>¿Existen operaciones diferenciadas por rol?</li>
+    <li>¿Los CRUD de estudiantes y cursos están completos?</li>
+    <li>¿Las matrículas validan la existencia de estudiante y curso?</li>
+    <li>¿Hay manejo de excepciones y mensajes entendibles?</li>
+    <li>¿Swagger funciona en todos los servicios?</li>
+    <li>¿Cada servicio tiene Dockerfile?</li>
+    <li>¿El sistema completo levanta con Docker Compose?</li>
+  </ul>
+</section>
+
+    <div class="footer">Proyecto final guiado · Ingeniería de Software III</div>
+  </div>
+</main>
+</body>
+</html>

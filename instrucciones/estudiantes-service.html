@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Módulo estudiantes-service</title>
+
+  <style>
+    :root{
+      --blue:#1f3c88;--blue-dark:#142a61;--soft:#edf3ff;--soft-2:#f8fbff;--border:#dbe4f3;
+      --bg:#f5f7fb;--text:#1f2937;--muted:#4b5563;--white:#fff;--shadow:0 10px 28px rgba(31,60,136,.08);
+      --radius:18px;--code:#eef2f7;--ok:#0f766e;--warn:#b45309;
+    }
+    *{box-sizing:border-box} html{scroll-behavior:smooth}
+    body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text);line-height:1.65}
+    .container{width:min(1180px,calc(100% - 32px));margin:0 auto}
+    header.hero{background:linear-gradient(135deg,var(--blue),var(--blue-dark));color:#fff;padding:44px 0 30px;box-shadow:var(--shadow)}
+    .back{display:inline-block;color:#dbe7ff;text-decoration:none;font-weight:bold;margin-bottom:16px}
+    h1{margin:0 0 12px;font-size:clamp(1.9rem,4vw,3rem);line-height:1.15}
+    header.hero p{margin:0;max-width:980px;color:#edf2ff}
+    main{padding:28px 0 52px}
+    .card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);margin-bottom:22px}
+    h2,h3,h4{color:var(--blue);margin-top:0}
+    h2{font-size:1.65rem;border-bottom:3px solid var(--soft);padding-bottom:10px;margin-bottom:18px}
+    h3{font-size:1.2rem;margin-top:24px;margin-bottom:10px}
+    h4{font-size:1.02rem;margin-top:18px;margin-bottom:8px}
+    p{margin:0 0 14px}
+    .grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+    .grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+    .toc{background:var(--soft-2);border:1px solid var(--border);border-radius:16px;padding:20px}
+    .toc ol{margin:0;padding-left:22px;columns:2;column-gap:36px}
+    .toc li{margin-bottom:8px}.toc a,.link-card a{color:var(--blue);text-decoration:none;font-weight:700}
+    .link-card{background:#fbfdff;border:1px solid var(--border);border-radius:16px;padding:18px;height:100%}
+    .step{border-left:5px solid var(--blue);background:#fbfdff;padding:16px 18px;border-radius:12px;margin:12px 0}
+    .note,.success,.warning{border-radius:14px;padding:16px 18px;margin:16px 0;border:1px solid transparent}
+    .note{background:#eff6ff;border-color:#bfdbfe}.success{background:#ecfdf5;border-color:#a7f3d0}.warning{background:#fff7ed;border-color:#fdba74}
+    pre{background:var(--code);color:#111827;border:1px solid #d8e0ea;border-radius:14px;padding:16px;overflow:auto;font-size:.92rem;line-height:1.5;margin:14px 0 18px}
+    code{font-family:Consolas,Monaco,'Courier New',monospace}
+    table{width:100%;border-collapse:collapse;margin:14px 0 18px;background:#fff;border-radius:12px;overflow:hidden}
+    th,td{border:1px solid var(--border);padding:12px;text-align:left;vertical-align:top} th{background:var(--soft);color:var(--blue)}
+    .pill{display:inline-block;background:var(--soft);color:var(--blue);border:1px solid #cdd9fb;padding:6px 12px;border-radius:999px;font-size:.92rem;margin:4px 8px 4px 0;font-weight:700}
+    .footer{text-align:center;color:var(--muted);padding:10px 0 0;font-size:.95rem}
+    @media (max-width: 920px){.grid-2,.grid-3{grid-template-columns:1fr}.toc ol{columns:1}}
+  </style>
+
+</head>
+<body>
+<header class="hero">
+  <div class="container">
+    <a class="back" href="index.html">← Volver</a>
+    <h1>Módulo estudiantes-service</h1>
+    <p>Guía descriptiva del servicio de estudiantes, con énfasis en la reutilización del CRUD del laboratorio y su protección con JWT.</p>
+  </div>
+</header>
+<main>
+  <div class="container">
+
+<section class="card">
+  <h2>Propósito del módulo</h2>
+  <p>Este servicio representa la evolución natural del CRUD trabajado durante el curso. Su valor pedagógico consiste en tomar una funcionalidad ya conocida y moverla a un contexto de microservicio protegido, donde además del CRUD deben considerarse autenticación, autorización, validación de datos y organización por capas.</p>
+</section>
+<section class="card">
+  <h2>Responsabilidades</h2>
+  <ul>
+    <li>Crear estudiantes nuevos con validaciones mínimas.</li>
+    <li>Consultar estudiantes individuales y listados completos.</li>
+    <li>Actualizar la información del estudiante.</li>
+    <li>Eliminar estudiantes cuando corresponda.</li>
+    <li>Exigir token válido antes de responder.</li>
+  </ul>
+</section>
+<section class="card">
+  <h2>Por qué este módulo es importante</h2>
+  <p>Muchos estudiantes aprenden a hacer un CRUD, pero no siempre logran entender cómo adaptar ese CRUD a una arquitectura más seria. Este módulo les obliga a reutilizar lo aprendido sin perder la estructura interna del servicio. No se trata de volver a programar lo mismo, sino de demostrar que el patrón arquitectónico se mantiene estable aun cuando el sistema crece.</p>
+</section>
+<section class="card">
+  <h2>Estructura sugerida</h2>
+  <pre><code>controller/EstudianteController.java
+handler/EstudianteHandler.java
+service/EstudianteService.java
+service/EstudianteServiceImpl.java
+repository/EstudianteRepository.java
+model/Estudiante.java
+dto/EstudianteDTO.java
+dto/EstudianteCreateDTO.java
+security/AuthValidationFilter.java
+client/AuthClient.java</code></pre>
+</section>
+<section class="card">
+  <h2>Reglas mínimas de negocio</h2>
+  <ul>
+    <li>No registrar dos estudiantes con el mismo correo.</li>
+    <li>Exigir campos obligatorios y edad mínima razonable.</li>
+    <li>Retornar mensajes claros cuando no exista el estudiante consultado.</li>
+    <li>Permitir escritura solo al rol administrador.</li>
+  </ul>
+</section>
+<section class="card">
+  <h2>Fragmentos base</h2>
+  <h3>Entidad</h3>
+  <pre><code>@Entity
+public class Estudiante {
+    private Long id;
+    private String nombre;
+    private String apellido;
+    private String email;
+    private Integer edad;
+}</code></pre>
+  <h3>Repository</h3>
+  <pre><code>public interface EstudianteRepository extends JpaRepository&lt;Estudiante, Long&gt; {
+    boolean existsByEmail(String email);
+}</code></pre>
+  <h3>Controller</h3>
+  <pre><code>@RequestMapping("/api/estudiantes")
+public class EstudianteController {
+    @GetMapping
+    @PostMapping
+    @PutMapping("/{id}")
+    @DeleteMapping("/{id}")
+}</code></pre>
+</section>
+
+    <div class="footer">Proyecto final guiado · Ingeniería de Software III</div>
+  </div>
+</main>
+</body>
+</html>
