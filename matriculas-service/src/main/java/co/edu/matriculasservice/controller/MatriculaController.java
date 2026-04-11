@@ -5,6 +5,7 @@ import co.edu.matriculasservice.api.ResponseBuilder;
 import co.edu.matriculasservice.dto.MatriculaCreateDTO;
 import co.edu.matriculasservice.dto.MatriculaDTO;
 import co.edu.matriculasservice.handler.MatriculaHandler;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/matriculas")
 public class MatriculaController {
+
     private final MatriculaHandler handler;
 
     public MatriculaController(MatriculaHandler handler) {
@@ -25,7 +27,9 @@ public class MatriculaController {
     }
 
     @GetMapping("/{id}")
-    public ApiResponse<MatriculaDTO> buscarPorId(@PathVariable Long id) {
+    public ApiResponse<MatriculaDTO> buscarPorId(
+            @Parameter(description = "Id de la matrícula", required = true)
+            @PathVariable("id") Long id) {
         return ResponseBuilder.success("Consulta exitosa", handler.buscarPorId(id));
     }
 
@@ -35,7 +39,9 @@ public class MatriculaController {
     }
 
     @PutMapping("/{id}/anular")
-    public ApiResponse<MatriculaDTO> anular(@PathVariable Long id) {
+    public ApiResponse<MatriculaDTO> anular(
+            @Parameter(description = "Id de la matrícula", required = true)
+            @PathVariable("id") Long id) {
         return ResponseBuilder.success("Matrícula anulada", handler.anular(id));
     }
 }
