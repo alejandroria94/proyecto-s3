@@ -102,7 +102,29 @@ docker compose up --build</code></pre><p>Antes de usar Docker Compose, asegúres
 <section class="card"><h2>Errores comunes</h2><div class="warning"><ul><li>No compilar los <code>.jar</code> antes de construir la imagen.</li><li>Exponer puertos incorrectos.</li><li>No ajustar las URL internas cuando se usa Docker.</li><li>Entregar capturas sin contexto o sin mostrar el endpoint probado.</li></ul></div></section>
 <section class="card"><h2>Checklist final de la etapa</h2><ul><li>Todos los servicios compilan.</li><li>Docker Compose levanta el sistema.</li><li>Swagger funciona en cada servicio.</li><li>Las pruebas mínimas fueron ejecutadas.</li><li>Las evidencias son claras y suficientes.</li></ul></section>
 
-    <div class="footer">Ingeniería de Software III · Proyecto final guiado</div>
+<section class="card"><h2>Apoyo conceptual</h2><p>Antes de ejecutar las pruebas de seguridad, revise la guía específica del sitio para comprender qué significa autenticar, autorizar, validar el token y restringir un endpoint por rol.</p><p><a class="btn" href="seguridad.html">Abrir guía de seguridad</a></p></section>
+
+    
+<section class="card">
+  <h2>Respuestas de seguridad uniformes</h2>
+  <p>Los servicios protegidos ahora responden con una estructura JSON uniforme cuando ocurre un error de autenticación o autorización. Esto mejora la trazabilidad, facilita las pruebas en Swagger y permite que el cliente identifique con claridad si el problema fue un token ausente, un token inválido o un rol insuficiente.</p>
+  <pre><code>{
+  "success": false,
+  "message": "Debe enviar un token Bearer válido",
+  "errorCode": "AUTH_HEADER_MISSING",
+  "status": 401,
+  "path": "/api/recurso",
+  "timestamp": "2026-04-11T15:30:00"
+}</code></pre>
+  <ul>
+    <li><code>AUTH_HEADER_MISSING</code>: no se envió el encabezado Bearer.</li>
+    <li><code>TOKEN_INVALID</code>: el token no es válido o no contiene rol.</li>
+    <li><code>TOKEN_VALIDATION_ERROR</code>: no fue posible validar el token contra auth-service.</li>
+    <li><code>AUTH_FORBIDDEN</code>: el usuario está autenticado, pero no tiene el rol necesario.</li>
+  </ul>
+</section>
+
+<div class="footer">Ingeniería de Software III · Proyecto final guiado</div>
   </div>
 </main>
 </body>

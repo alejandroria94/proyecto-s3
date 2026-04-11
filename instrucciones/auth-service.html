@@ -81,7 +81,15 @@
 <section class="card"><h2>Errores comunes</h2><div class="warning"><ul><li>Olvidar cifrar la contraseña.</li><li>Configurar mal el secreto JWT.</li><li>No incluir el rol dentro del token.</li><li>Bloquear por error el acceso al endpoint de login.</li></ul></div></section>
 <section class="card"><h2>Checklist del módulo</h2><ul><li>Existe entidad Usuario correctamente configurada.</li><li>El login genera JWT.</li><li>El endpoint de validación responde correctamente.</li><li>Swagger documenta el módulo.</li><li>Hay al menos un caso positivo y uno negativo probados.</li></ul></section>
 
-    <div class="footer">Ingeniería de Software III · Proyecto final guiado</div>
+<section class="card"><h2>Seguridad relacionada con este módulo</h2><p>Este módulo se complementa con la <strong>guía de seguridad</strong>, donde se explica con más detalle la diferencia entre autenticación y autorización, el contenido del JWT, el rol de los filtros y la forma en que Spring Security aplica las restricciones por rol.</p><ul><li><strong>Autenticación:</strong> ocurre en <code>/auth/login</code>.</li><li><strong>Validación de token:</strong> ocurre en <code>/auth/validate</code>.</li><li><strong>Autorización:</strong> se aplica luego en los microservicios de negocio mediante roles.</li></ul><p><a class="btn" href="seguridad.html">Abrir guía de seguridad</a></p></section>
+
+    
+<section class="card">
+  <h2>Cómo impacta este módulo a los demás servicios</h2>
+  <p>Aunque <code>auth-service</code> no devuelve la estructura uniforme 401/403 de los servicios protegidos, sí es la base de esa mecánica. Los demás módulos consultan <code>/auth/validate</code> y, según su respuesta, construyen errores estandarizados como <code>AUTH_HEADER_MISSING</code>, <code>TOKEN_INVALID</code> y <code>AUTH_FORBIDDEN</code>.</p>
+</section>
+
+<div class="footer">Ingeniería de Software III · Proyecto final guiado</div>
   </div>
 </main>
 </body>

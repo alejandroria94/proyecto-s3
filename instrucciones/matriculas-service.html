@@ -82,7 +82,27 @@
 <section class="card"><h2>Errores comunes</h2><div class="warning"><ul><li>Registrar sin validar estudiante y curso.</li><li>No manejar errores de integración entre servicios.</li><li>Permitir duplicidad de matrículas activas.</li><li>Ubicar toda la lógica en el controlador.</li></ul></div></section>
 <section class="card"><h2>Checklist del módulo</h2><ul><li>Se consumen correctamente estudiantes-service y cursos-service.</li><li>Existen reglas de negocio claras en la capa service.</li><li>El token es obligatorio.</li><li>Se probaron casos positivos y negativos.</li><li>Swagger documenta correctamente el módulo.</li></ul></section>
 
-    <div class="footer">Ingeniería de Software III · Proyecto final guiado</div>
+    
+<section class="card">
+  <h2>Respuestas de seguridad uniformes</h2>
+  <p>Los servicios protegidos ahora responden con una estructura JSON uniforme cuando ocurre un error de autenticación o autorización. Esto mejora la trazabilidad, facilita las pruebas en Swagger y permite que el cliente identifique con claridad si el problema fue un token ausente, un token inválido o un rol insuficiente.</p>
+  <pre><code>{
+  "success": false,
+  "message": "Debe enviar un token Bearer válido",
+  "errorCode": "AUTH_HEADER_MISSING",
+  "status": 401,
+  "path": "/api/recurso",
+  "timestamp": "2026-04-11T15:30:00"
+}</code></pre>
+  <ul>
+    <li><code>AUTH_HEADER_MISSING</code>: no se envió el encabezado Bearer.</li>
+    <li><code>TOKEN_INVALID</code>: el token no es válido o no contiene rol.</li>
+    <li><code>TOKEN_VALIDATION_ERROR</code>: no fue posible validar el token contra auth-service.</li>
+    <li><code>AUTH_FORBIDDEN</code>: el usuario está autenticado, pero no tiene el rol necesario.</li>
+  </ul>
+</section>
+
+<div class="footer">Ingeniería de Software III · Proyecto final guiado</div>
   </div>
 </main>
 </body>

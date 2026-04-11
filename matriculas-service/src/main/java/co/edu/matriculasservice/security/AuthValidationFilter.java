@@ -19,9 +19,12 @@ import java.util.List;
 public class AuthValidationFilter extends OncePerRequestFilter {
 
     private final AuthClient authClient;
+    private final CustomAuthenticationEntryPoint authenticationEntryPoint;
 
-    public AuthValidationFilter(AuthClient authClient) {
+    public AuthValidationFilter(AuthClient authClient,
+                                CustomAuthenticationEntryPoint authenticationEntryPoint) {
         this.authClient = authClient;
+        this.authenticationEntryPoint = authenticationEntryPoint;
     }
 
     @Override
@@ -36,14 +39,30 @@ public class AuthValidationFilter extends OncePerRequestFilter {
 
         String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            SecurityContextHolder.clearContext();
+            authenticationEntryPoint.commence(
+                    request,
+                    response,
+                    new CustomAuthenticationException(
+                            "Debe enviar un token Bearer válido",
+                            "AUTH_HEADER_MISSING"
+                    )
+            );
             return;
         }
 
         try {
             TokenValidationResponse validation = authClient.validate(authHeader);
             if (!validation.isValid() || validation.getRole() == null) {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                SecurityContextHolder.clearContext();
+                authenticationEntryPoint.commence(
+                        request,
+                        response,
+                        new CustomAuthenticationException(
+                                "El token no es válido o no contiene rol",
+                                "TOKEN_INVALID"
+                        )
+                );
                 return;
             }
 
@@ -56,7 +75,15 @@ public class AuthValidationFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             filterChain.doFilter(request, response);
         } catch (Exception ex) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            SecurityContextHolder.clearContext();
+            authenticationEntryPoint.commence(
+                    request,
+                    response,
+                    new CustomAuthenticationException(
+                            "No fue posible validar el token",
+                            "TOKEN_VALIDATION_ERROR"
+                    )
+            );
         }
     }
 }

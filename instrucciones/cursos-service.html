@@ -80,7 +80,27 @@
 <section class="card"><h2>Errores comunes</h2><div class="warning"><ul><li>No validar la duplicidad del código.</li><li>Permitir modificaciones a cualquier rol.</li><li>Copiar el servicio anterior sin adaptar nombres ni reglas.</li><li>Dejar la documentación incompleta.</li></ul></div></section>
 <section class="card"><h2>Checklist del módulo</h2><ul><li>CRUD completo de cursos.</li><li>Token obligatorio y roles correctos.</li><li>Regla de código único implementada.</li><li>Swagger funcional.</li><li>Evidencias listas.</li></ul></section>
 
-    <div class="footer">Ingeniería de Software III · Proyecto final guiado</div>
+    
+<section class="card">
+  <h2>Respuestas de seguridad uniformes</h2>
+  <p>Los servicios protegidos ahora responden con una estructura JSON uniforme cuando ocurre un error de autenticación o autorización. Esto mejora la trazabilidad, facilita las pruebas en Swagger y permite que el cliente identifique con claridad si el problema fue un token ausente, un token inválido o un rol insuficiente.</p>
+  <pre><code>{
+  "success": false,
+  "message": "Debe enviar un token Bearer válido",
+  "errorCode": "AUTH_HEADER_MISSING",
+  "status": 401,
+  "path": "/api/recurso",
+  "timestamp": "2026-04-11T15:30:00"
+}</code></pre>
+  <ul>
+    <li><code>AUTH_HEADER_MISSING</code>: no se envió el encabezado Bearer.</li>
+    <li><code>TOKEN_INVALID</code>: el token no es válido o no contiene rol.</li>
+    <li><code>TOKEN_VALIDATION_ERROR</code>: no fue posible validar el token contra auth-service.</li>
+    <li><code>AUTH_FORBIDDEN</code>: el usuario está autenticado, pero no tiene el rol necesario.</li>
+  </ul>
+</section>
+
+<div class="footer">Ingeniería de Software III · Proyecto final guiado</div>
   </div>
 </main>
 </body>
