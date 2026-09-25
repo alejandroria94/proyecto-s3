@@ -1,4 +1,4 @@
-package api;
+package co.edu.authservice.api;
 
 import java.time.LocalDateTime;
 

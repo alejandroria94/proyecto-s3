@@ -25,7 +25,7 @@ public class AuthController {
 
     @GetMapping("/validate")
     @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<TokenValidationResponse> validate(@RequestHeader("Authorization") String authorization) {
+    public ResponseEntity<TokenValidationResponse> validate(@RequestHeader(value = "Authorization", required = false) String authorization) {
         return ResponseEntity.ok(authService.validate(authorization));
     }
 }

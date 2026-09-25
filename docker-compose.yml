@@ -10,6 +10,7 @@ services:
     container_name: estudiantes-service
     environment:
       AUTH_SERVICE_URL: http://auth-service:8081
+      MATRICULAS_SERVICE_URL: http://matriculas-service:8084
     depends_on:
       - auth-service
     ports:
@@ -20,6 +21,7 @@ services:
     container_name: cursos-service
     environment:
       AUTH_SERVICE_URL: http://auth-service:8081
+      MATRICULAS_SERVICE_URL: http://matriculas-service:8084
     depends_on:
       - auth-service
     ports:
@@ -38,3 +40,15 @@ services:
       - cursos-service
     ports:
       - "8084:8084"
+
+  calificaciones-service:
+    build: ./calificaciones-service
+    container_name: calificaciones-service
+    environment:
+      AUTH_SERVICE_URL: http://auth-service:8081
+      MATRICULAS_SERVICE_URL: http://matriculas-service:8084
+    depends_on:
+      - auth-service
+      - matriculas-service
+    ports:
+      - "8085:8085"

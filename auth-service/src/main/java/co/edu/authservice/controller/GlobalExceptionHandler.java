@@ -1,11 +1,14 @@
 package co.edu.authservice.controller;
 
 
-import api.ApiErrorResponse;
+import co.edu.authservice.api.ApiErrorResponse;
 import co.edu.authservice.exception.InvalidCredentialsException;
 import co.edu.authservice.exception.InvalidTokenException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -67,6 +70,51 @@ public class GlobalExceptionHandler {
         body.put("errors", fieldErrors);
 
         return ResponseEntity.badRequest().body(body);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ApiErrorResponse> handleMalformedJson(
+            HttpMessageNotReadableException ex,
+            HttpServletRequest request) {
+
+        ApiErrorResponse response = ApiErrorResponse.of(
+                "El cuerpo de la solicitud no es un JSON válido",
+                "MALFORMED_REQUEST",
+                HttpStatus.BAD_REQUEST.value(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleNoResource(
+            NoResourceFoundException ex,
+            HttpServletRequest request) {
+
+        ApiErrorResponse response = ApiErrorResponse.of(
+                "La ruta solicitada no existe",
+                "NOT_FOUND",
+                HttpStatus.NOT_FOUND.value(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ApiErrorResponse> handleMethodNotSupported(
+            HttpRequestMethodNotSupportedException ex,
+            HttpServletRequest request) {
+
+        ApiErrorResponse response = ApiErrorResponse.of(
+                "Método HTTP no permitido para esta ruta",
+                "METHOD_NOT_ALLOWED",
+                HttpStatus.METHOD_NOT_ALLOWED.value(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(response);
     }
 
     @ExceptionHandler(Exception.class)

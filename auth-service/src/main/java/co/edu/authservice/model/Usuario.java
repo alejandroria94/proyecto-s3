@@ -14,6 +14,8 @@ public class Usuario {
     private String password;
     @Column(nullable = false)
     private String role;
+    // E4: solo los usuarios con rol ESTUDIANTE quedan asociados a un estudiante de estudiantes-service
+    private Long estudianteId;
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -23,4 +25,6 @@ public class Usuario {
     public void setPassword(String password) { this.password = password; }
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
+    public Long getEstudianteId() { return estudianteId; }
+    public void setEstudianteId(Long estudianteId) { this.estudianteId = estudianteId; }
 }

@@ -1,6 +1,7 @@
 package co.edu.authservice.util;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -23,16 +24,19 @@ public class JwtUtils {
         return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateToken(String username, String role) {
+    public String generateToken(String username, String role, Long estudianteId) {
         Date now = new Date();
         Date expiration = new Date(now.getTime() + expirationMs);
-        return Jwts.builder()
+        JwtBuilder builder = Jwts.builder()
                 .setSubject(username)
                 .claim("role", role)
                 .setIssuedAt(now)
-                .setExpiration(expiration)
-                .signWith(getKey(), SignatureAlgorithm.HS256)
-                .compact();
+                .setExpiration(expiration);
+        // E4: el claim solo existe para usuarios asociados a un estudiante
+        if (estudianteId != null) {
+            builder.claim("estudianteId", estudianteId);
+        }
+        return builder.signWith(getKey(), SignatureAlgorithm.HS256).compact();
     }
 
     public Claims parseToken(String token) {

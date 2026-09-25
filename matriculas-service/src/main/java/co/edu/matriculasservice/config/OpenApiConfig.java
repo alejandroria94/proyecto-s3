@@ -15,7 +15,7 @@ public class OpenApiConfig {
     public OpenAPI customOpenAPI() {
         final String schemeName = "bearerAuth";
         return new OpenAPI()
-                .info(new Info().title("Matriculas Service").version("1.0.0").description("Matrículas con validación cruzada"))
+                .info(new Info().title("Matriculas Service").version("1.0.0").description("Matrículas con validación cruzada de estudiantes y cursos"))
                 .addSecurityItem(new SecurityRequirement().addList(schemeName))
                 .components(new Components().addSecuritySchemes(schemeName,
                         new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")));

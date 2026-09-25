@@ -3,15 +3,29 @@ package co.edu.estudiantesservice.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "estudiante", uniqueConstraints = @UniqueConstraint(name = "uk_estudiante_email", columnNames = "email"))
+@Table(name = "estudiante", uniqueConstraints = {
+        @UniqueConstraint(name = "uk_estudiante_email", columnNames = {"email"})
+})
 public class Estudiante {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false) private String nombre;
-    @Column(nullable = false) private String apellido;
-    @Column(nullable = false) private String email;
-    @Column(nullable = false) private Integer edad;
+
+    @Column(nullable = false, length = 120)
+    private String nombre;
+
+    @Column(nullable = false, length = 120)
+    private String apellido;
+
+    @Column(nullable = false, length = 160)
+    private String email;
+
+    @Column(nullable = false)
+    private Integer edad;
+
+    public Estudiante() {
+    }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }

@@ -11,6 +11,9 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+/**
+ * Responde 401 cuando la petición no está autenticada (sin token, token inválido o no verificable).
+ */
 @Component
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
@@ -26,7 +29,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
                          AuthenticationException authException) throws IOException {
 
         String errorCode = "AUTH_UNAUTHORIZED";
-        String message = authException.getMessage();
+        String message = "Debe autenticarse para acceder a este recurso";
 
         if (authException instanceof CustomAuthenticationException customEx) {
             errorCode = customEx.getErrorCode();
@@ -34,7 +37,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         }
 
         ApiErrorResponse body = ApiErrorResponse.of(
-                message != null ? message : "No autorizado",
+                message,
                 errorCode,
                 HttpServletResponse.SC_UNAUTHORIZED,
                 request.getRequestURI()

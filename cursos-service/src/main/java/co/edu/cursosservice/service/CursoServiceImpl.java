@@ -1,70 +1,94 @@
 package co.edu.cursosservice.service;
 
-import co.edu.cursosservice.dto.CursoCreateDTO;
-import co.edu.cursosservice.dto.CursoDTO;
+import co.edu.cursosservice.client.MatriculasClient;
+import co.edu.cursosservice.dto.RemoteApiResponse;
 import co.edu.cursosservice.exception.BusinessException;
+import co.edu.cursosservice.exception.ConflictException;
 import co.edu.cursosservice.exception.NotFoundException;
+import co.edu.cursosservice.exception.RemoteServiceException;
 import co.edu.cursosservice.model.Curso;
 import co.edu.cursosservice.repository.CursoRepository;
+import feign.FeignException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class CursoServiceImpl implements CursoService {
+
     private final CursoRepository repository;
+    private final MatriculasClient matriculasClient;
 
-    public CursoServiceImpl(CursoRepository repository) {
+    public CursoServiceImpl(CursoRepository repository, MatriculasClient matriculasClient) {
         this.repository = repository;
+        this.matriculasClient = matriculasClient;
     }
 
-    public List<CursoDTO> listar() {
-        return repository.findAll().stream().map(this::toDto).toList();
-    }
-
-    public CursoDTO buscarPorId(Long id) {
-        return toDto(repository.findById(id).orElseThrow(() -> new NotFoundException("Curso no encontrado")));
-    }
-
-    public CursoDTO crear(CursoCreateDTO dto) {
-        if (repository.existsByCodigo(dto.getCodigo())) {
-            throw new BusinessException("Ya existe un curso con ese código");
+    @Override
+    public Curso crear(Curso curso) {
+        if (repository.existsByCodigo(curso.getCodigo())) {
+            throw new BusinessException("Ya existe un curso con el código: " + curso.getCodigo());
         }
-        Curso c = new Curso();
-        c.setCodigo(dto.getCodigo());
-        c.setNombre(dto.getNombre());
-        c.setDescripcion(dto.getDescripcion());
-        c.setCreditos(dto.getCreditos());
-        c.setDocenteResponsable(dto.getDocenteResponsable());
-        return toDto(repository.save(c));
+        return repository.save(curso);
     }
 
-    public CursoDTO actualizar(Long id, CursoCreateDTO dto) {
-        Curso c = repository.findById(id).orElseThrow(() -> new NotFoundException("Curso no encontrado"));
-        if (repository.existsByCodigoAndIdNot(dto.getCodigo(), id)) {
-            throw new BusinessException("Ya existe otro curso con ese código");
+    @Override
+    @Transactional(readOnly = true)
+    public Curso obtenerPorId(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Curso no encontrado: " + id));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Curso> listar(Pageable pageable) {
+        return repository.findAll(pageable);
+    }
+
+    @Override
+    public Curso actualizar(Long id, Curso curso) {
+        Curso actual = obtenerPorId(id);
+        if (repository.existsByCodigoAndIdNot(curso.getCodigo(), id)) {
+            throw new BusinessException("Ya existe otro curso con el código: " + curso.getCodigo());
         }
-        c.setCodigo(dto.getCodigo());
-        c.setNombre(dto.getNombre());
-        c.setDescripcion(dto.getDescripcion());
-        c.setCreditos(dto.getCreditos());
-        c.setDocenteResponsable(dto.getDocenteResponsable());
-        return toDto(repository.save(c));
+        // Reto E2: solo al reducir el cupo hace falta preguntar cuántas matrículas activas hay
+        if (curso.getCupoMaximo() < actual.getCupoMaximo()) {
+            long activas = contarMatriculasActivas(id);
+            if (activas > curso.getCupoMaximo()) {
+                throw new BusinessException("El cupo no puede ser menor que las " + activas + " matrícula(s) activa(s) del curso");
+            }
+        }
+        actual.setCodigo(curso.getCodigo());
+        actual.setNombre(curso.getNombre());
+        actual.setDescripcion(curso.getDescripcion());
+        actual.setCreditos(curso.getCreditos());
+        actual.setDocenteResponsable(curso.getDocenteResponsable());
+        actual.setCupoMaximo(curso.getCupoMaximo());
+        return repository.save(actual);
     }
 
+    @Override
     public void eliminar(Long id) {
-        if (!repository.existsById(id)) throw new NotFoundException("Curso no encontrado");
-        repository.deleteById(id);
+        Curso curso = obtenerPorId(id);
+        // E1: no se elimina un curso que todavía tiene matrículas activas
+        long activas = contarMatriculasActivas(id);
+        if (activas > 0) {
+            throw new ConflictException("No se puede eliminar: el curso tiene " + activas + " matrícula(s) activa(s)");
+        }
+        repository.delete(curso);
     }
 
-    private CursoDTO toDto(Curso c) {
-        CursoDTO dto = new CursoDTO();
-        dto.setId(c.getId());
-        dto.setCodigo(c.getCodigo());
-        dto.setNombre(c.getNombre());
-        dto.setDescripcion(c.getDescripcion());
-        dto.setCreditos(c.getCreditos());
-        dto.setDocenteResponsable(c.getDocenteResponsable());
-        return dto;
+    private long contarMatriculasActivas(Long cursoId) {
+        try {
+            RemoteApiResponse<Long> response = matriculasClient.contarActivasPorCurso(cursoId);
+            if (response == null || !response.isSuccess() || response.getData() == null) {
+                throw new RemoteServiceException("matriculas-service no devolvió el conteo de matrículas");
+            }
+            return response.getData();
+        } catch (FeignException ex) {
+            throw new RemoteServiceException("No fue posible verificar las matrículas del curso (código remoto " + ex.status() + ")");
+        }
     }
 }

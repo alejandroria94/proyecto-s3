@@ -5,15 +5,6 @@ public class TokenValidationResponse {
     private String username;
     private String role;
 
-    public TokenValidationResponse() {
-    }
-
-    public TokenValidationResponse(boolean valid, String username, String role) {
-        this.valid = valid;
-        this.username = username;
-        this.role = role;
-    }
-
     public boolean isValid() { return valid; }
     public void setValid(boolean valid) { this.valid = valid; }
     public String getUsername() { return username; }

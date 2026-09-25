@@ -1,14 +1,13 @@
 package co.edu.estudiantesservice.service;
 
-import co.edu.estudiantesservice.dto.EstudianteCreateDTO;
-import co.edu.estudiantesservice.dto.EstudianteDTO;
-
-import java.util.List;
+import co.edu.estudiantesservice.model.Estudiante;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface EstudianteService {
-    List<EstudianteDTO> listar();
-    EstudianteDTO buscarPorId(Long id);
-    EstudianteDTO crear(EstudianteCreateDTO dto);
-    EstudianteDTO actualizar(Long id, EstudianteCreateDTO dto);
+    Estudiante crear(Estudiante estudiante);
+    Estudiante obtenerPorId(Long id);
+    Page<Estudiante> listar(Pageable pageable);
+    Estudiante actualizar(Long id, Estudiante estudiante);
     void eliminar(Long id);
 }

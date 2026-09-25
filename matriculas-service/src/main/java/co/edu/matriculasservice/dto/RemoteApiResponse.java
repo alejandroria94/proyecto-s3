@@ -1,5 +1,9 @@
 package co.edu.matriculasservice.dto;
 
+/**
+ * Copia local del contrato de respuesta de los otros servicios: {success, message, data}.
+ * Cada microservicio define sus propias clases; no se comparte código entre servicios.
+ */
 public class RemoteApiResponse<T> {
     private boolean success;
     private String message;

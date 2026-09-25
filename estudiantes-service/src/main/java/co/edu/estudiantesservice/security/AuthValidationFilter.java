@@ -2,6 +2,7 @@ package co.edu.estudiantesservice.security;
 
 import co.edu.estudiantesservice.client.AuthClient;
 import co.edu.estudiantesservice.dto.TokenValidationResponse;
+import feign.FeignException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,62 +29,54 @@ public class AuthValidationFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
-
+    protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
-        if (path.startsWith("/swagger-ui") || path.startsWith("/v3/api-docs") || path.startsWith("/h2-console")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
+        return path.startsWith("/swagger-ui")
+                || path.startsWith("/v3/api-docs")
+                || path.startsWith("/h2-console");
+    }
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException {
 
         String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            SecurityContextHolder.clearContext();
-            authenticationEntryPoint.commence(
-                    request,
-                    response,
-                    new CustomAuthenticationException(
-                            "Debe enviar un token Bearer válido",
-                            "AUTH_HEADER_MISSING"
-                    )
-            );
+            reject(request, response, "Debe enviar un token Bearer válido", "AUTH_HEADER_MISSING");
             return;
         }
 
+        TokenValidationResponse validation;
         try {
-            TokenValidationResponse validation = authClient.validate(authHeader);
-            if (!validation.isValid() || validation.getRole() == null) {
-                SecurityContextHolder.clearContext();
-                authenticationEntryPoint.commence(
-                        request,
-                        response,
-                        new CustomAuthenticationException(
-                                "El token no es válido o no contiene rol",
-                                "TOKEN_INVALID"
-                        )
-                );
-                return;
-            }
-
-            UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(
-                            validation.getUsername(),
-                            null,
-                            List.of(new SimpleGrantedAuthority(validation.getRole()))
-                    );
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            filterChain.doFilter(request, response);
-        } catch (Exception ex) {
-            SecurityContextHolder.clearContext();
-            authenticationEntryPoint.commence(
-                    request,
-                    response,
-                    new CustomAuthenticationException(
-                            "No fue posible validar el token",
-                            "TOKEN_VALIDATION_ERROR"
-                    )
-            );
+            validation = authClient.validate(authHeader);
+        } catch (FeignException.Unauthorized ex) {
+            reject(request, response, "El token no es válido o expiró", "TOKEN_INVALID");
+            return;
+        } catch (FeignException ex) {
+            reject(request, response, "No fue posible validar el token con auth-service", "TOKEN_VALIDATION_ERROR");
+            return;
         }
+
+        if (validation == null || !validation.isValid() || validation.getRole() == null) {
+            reject(request, response, "El token no es válido o no contiene rol", "TOKEN_INVALID");
+            return;
+        }
+
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                validation.getUsername(),
+                null,
+                List.of(new SimpleGrantedAuthority(validation.getRole()))
+        );
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        // Fuera de cualquier try: los errores de las capas siguientes no deben convertirse en un 401
+        filterChain.doFilter(request, response);
+    }
+
+    private void reject(HttpServletRequest request, HttpServletResponse response,
+                        String message, String errorCode) throws IOException {
+        SecurityContextHolder.clearContext();
+        authenticationEntryPoint.commence(request, response, new CustomAuthenticationException(message, errorCode));
     }
 }

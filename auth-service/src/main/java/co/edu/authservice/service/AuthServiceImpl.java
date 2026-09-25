@@ -35,7 +35,7 @@ public class AuthServiceImpl implements AuthService {
             throw new InvalidCredentialsException("Credenciales inválidas");
         }
 
-        String token = jwtUtils.generateToken(usuario.getUsername(), usuario.getRole());
+        String token = jwtUtils.generateToken(usuario.getUsername(), usuario.getRole(), usuario.getEstudianteId());
         return new LoginResponse(token, usuario.getUsername(), usuario.getRole());
     }
 
@@ -51,7 +51,8 @@ public class AuthServiceImpl implements AuthService {
             return new TokenValidationResponse(
                     true,
                     claims.getSubject(),
-                    claims.get("role", String.class)
+                    claims.get("role", String.class),
+                    claims.get("estudianteId", Long.class)
             );
         } catch (Exception ex) {
             throw new InvalidTokenException("Token inválido o expirado");

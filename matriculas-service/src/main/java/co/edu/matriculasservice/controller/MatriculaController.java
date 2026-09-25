@@ -5,8 +5,15 @@ import co.edu.matriculasservice.api.ResponseBuilder;
 import co.edu.matriculasservice.dto.MatriculaCreateDTO;
 import co.edu.matriculasservice.dto.MatriculaDTO;
 import co.edu.matriculasservice.handler.MatriculaHandler;
+import co.edu.matriculasservice.security.UsuarioAutenticado;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,27 +28,45 @@ public class MatriculaController {
         this.handler = handler;
     }
 
-    @GetMapping
-    public ApiResponse<List<MatriculaDTO>> listar() {
-        return ResponseBuilder.success("Consulta exitosa", handler.listar());
+    @PostMapping
+    public ResponseEntity<ApiResponse<MatriculaDTO>> registrar(@Valid @RequestBody MatriculaCreateDTO in) {
+        return ResponseBuilder.created("Matrícula registrada", handler.registrar(in));
     }
 
     @GetMapping("/{id}")
-    public ApiResponse<MatriculaDTO> buscarPorId(
+    public ResponseEntity<ApiResponse<MatriculaDTO>> obtener(
             @Parameter(description = "Id de la matrícula", required = true)
             @PathVariable("id") Long id) {
-        return ResponseBuilder.success("Consulta exitosa", handler.buscarPorId(id));
+        return ResponseBuilder.ok("OK", handler.obtener(id));
     }
 
-    @PostMapping
-    public ApiResponse<MatriculaDTO> registrar(@Valid @RequestBody MatriculaCreateDTO dto) {
-        return ResponseBuilder.success("Matrícula registrada", handler.registrar(dto));
+    @GetMapping
+    public ResponseEntity<ApiResponse<Page<MatriculaDTO>>> listar(@ParameterObject Pageable pageable) {
+        return ResponseBuilder.ok("OK", handler.listar(pageable));
+    }
+
+    // E1: lo consultan estudiantes-service y cursos-service antes de eliminar
+    @GetMapping("/activas/conteo")
+    public ResponseEntity<ApiResponse<Long>> contarActivas(
+            @RequestParam(value = "estudianteId", required = false) Long estudianteId,
+            @RequestParam(value = "cursoId", required = false) Long cursoId) {
+        return ResponseBuilder.ok("OK", handler.contarActivas(estudianteId, cursoId));
+    }
+
+    // E4: el estudiante se toma del token, nunca de un parámetro de la petición
+    @GetMapping("/mias")
+    public ResponseEntity<ApiResponse<List<MatriculaDTO>>> misMatriculas(
+            @Parameter(hidden = true) @AuthenticationPrincipal UsuarioAutenticado usuario) {
+        if (usuario == null || usuario.estudianteId() == null) {
+            throw new AccessDeniedException("El usuario no tiene un estudiante asociado");
+        }
+        return ResponseBuilder.ok("OK", handler.listarPorEstudiante(usuario.estudianteId()));
     }
 
     @PutMapping("/{id}/anular")
-    public ApiResponse<MatriculaDTO> anular(
+    public ResponseEntity<ApiResponse<MatriculaDTO>> anular(
             @Parameter(description = "Id de la matrícula", required = true)
             @PathVariable("id") Long id) {
-        return ResponseBuilder.success("Matrícula anulada", handler.anular(id));
+        return ResponseBuilder.ok("Matrícula anulada", handler.anular(id));
     }
 }

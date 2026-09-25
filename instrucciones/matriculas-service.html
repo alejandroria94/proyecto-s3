@@ -66,19 +66,24 @@
 ├── client/AuthClient.java
 ├── client/EstudiantesClient.java
 ├── client/CursosClient.java
+├── config/FeignAuthPropagationConfig.java
 ├── controller/MatriculaController.java
 ├── handler/MatriculaHandler.java
 ├── service/MatriculaService.java
 ├── service/MatriculaServiceImpl.java
 ├── repository/MatriculaRepository.java
 ├── model/Matricula.java
+├── model/EstadoMatricula.java
 ├── dto/MatriculaDTO.java
 ├── dto/MatriculaCreateDTO.java
+├── dto/RemoteApiResponse.java
+├── dto/EstudianteRemotoDTO.java
+├── dto/CursoRemotoDTO.java
 └── security/AuthValidationFilter.java</code></pre></section>
 <section class="card"><h2>Secuencia de registro</h2><div class="step"><strong>1.</strong> Llega una solicitud con <code>estudianteId</code> y <code>cursoId</code>.</div><div class="step"><strong>2.</strong> El servicio consulta <code>estudiantes-service</code> para verificar el estudiante.</div><div class="step"><strong>3.</strong> El servicio consulta <code>cursos-service</code> para verificar el curso.</div><div class="step"><strong>4.</strong> Revisa si ya existe una matrícula activa para la misma combinación.</div><div class="step"><strong>5.</strong> Si todo es válido, guarda la matrícula con estado <code>ACTIVA</code>.</div></section>
-<section class="card"><h2>Reglas mínimas de negocio</h2><ul><li>No registrar una matrícula si el estudiante no existe.</li><li>No registrar una matrícula si el curso no existe.</li><li>No duplicar una matrícula activa para el mismo estudiante y curso.</li><li>La anulación debe cambiar el estado y no necesariamente eliminar físicamente el registro.</li></ul></section>
+<section class="card"><h2>Reglas mínimas de negocio</h2><ul><li>No registrar una matrícula si el estudiante no existe.</li><li>No registrar una matrícula si el curso no existe.</li><li>No duplicar una matrícula activa para el mismo estudiante y curso.</li><li>La anulación debe cambiar el estado y no necesariamente eliminar físicamente el registro.</li><li>Una matrícula ya anulada no se puede anular de nuevo.</li><li>Si estudiantes o cursos no responden, la matrícula no se registra y se responde <code>502</code>.</li></ul><div class="note"><strong>Extensiones:</strong> matrículas valida el cupo del curso (<a href="extension-e2-cupos.html">E2</a>), publica el conteo de activas (<a href="extension-e1-integridad.html">E1</a>) y ofrece <code>GET /api/matriculas/mias</code> al rol ESTUDIANTE (<a href="extension-e4-mis-matriculas.html">E4</a>).</div></section>
 <section class="card"><h2>Endpoints mínimos</h2><table><thead><tr><th>Endpoint</th><th>Método</th><th>Rol esperado</th></tr></thead><tbody><tr><td><code>/api/matriculas</code></td><td>GET</td><td>ADMIN, DOCENTE</td></tr><tr><td><code>/api/matriculas/{id}</code></td><td>GET</td><td>ADMIN, DOCENTE</td></tr><tr><td><code>/api/matriculas</code></td><td>POST</td><td>ADMIN</td></tr><tr><td><code>/api/matriculas/{id}/anular</code></td><td>PUT</td><td>ADMIN</td></tr></tbody></table></section>
-<section class="card"><h2>Evidencias esperadas</h2><ol><li>Registro exitoso de una matrícula.</li><li>Intento fallido porque el estudiante no existe.</li><li>Intento fallido porque el curso no existe.</li><li>Intento fallido por duplicidad.</li><li>Anulación correcta de una matrícula.</li></ol></section>
+<section class="card"><h2>Evidencias esperadas</h2><ol><li>Registro exitoso de una matrícula.</li><li>Intento fallido porque el estudiante no existe.</li><li>Intento fallido porque el curso no existe.</li><li>Intento fallido por duplicidad.</li><li>Anulación correcta de una matrícula.</li><li>Intento fallido de anular una matrícula ya anulada.</li></ol></section>
 <section class="card"><h2>Errores comunes</h2><div class="warning"><ul><li>Registrar sin validar estudiante y curso.</li><li>No manejar errores de integración entre servicios.</li><li>Permitir duplicidad de matrículas activas.</li><li>Ubicar toda la lógica en el controlador.</li></ul></div></section>
 <section class="card"><h2>Checklist del módulo</h2><ul><li>Se consumen correctamente estudiantes-service y cursos-service.</li><li>Existen reglas de negocio claras en la capa service.</li><li>El token es obligatorio.</li><li>Se probaron casos positivos y negativos.</li><li>Swagger documenta correctamente el módulo.</li></ul></section>
 

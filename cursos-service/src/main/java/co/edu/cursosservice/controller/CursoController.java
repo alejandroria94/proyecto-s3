@@ -4,12 +4,15 @@ import co.edu.cursosservice.api.ApiResponse;
 import co.edu.cursosservice.api.ResponseBuilder;
 import co.edu.cursosservice.dto.CursoCreateDTO;
 import co.edu.cursosservice.dto.CursoDTO;
+import co.edu.cursosservice.dto.CursoUpdateDTO;
 import co.edu.cursosservice.handler.CursoHandler;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/cursos")
@@ -21,36 +24,36 @@ public class CursoController {
         this.handler = handler;
     }
 
-    @GetMapping
-    public ApiResponse<List<CursoDTO>> listar() {
-        return ResponseBuilder.success("Consulta exitosa", handler.listar());
+    @PostMapping
+    public ResponseEntity<ApiResponse<CursoDTO>> crear(@Valid @RequestBody CursoCreateDTO in) {
+        return ResponseBuilder.created("Curso creado", handler.crear(in));
     }
 
     @GetMapping("/{id}")
-    public ApiResponse<CursoDTO> buscarPorId(
+    public ResponseEntity<ApiResponse<CursoDTO>> obtener(
             @Parameter(description = "Id del curso", required = true)
             @PathVariable("id") Long id) {
-        return ResponseBuilder.success("Consulta exitosa", handler.buscarPorId(id));
+        return ResponseBuilder.ok("OK", handler.obtener(id));
     }
 
-    @PostMapping
-    public ApiResponse<CursoDTO> crear(@Valid @RequestBody CursoCreateDTO dto) {
-        return ResponseBuilder.success("Curso creado", handler.crear(dto));
+    @GetMapping
+    public ResponseEntity<ApiResponse<Page<CursoDTO>>> listar(@ParameterObject Pageable pageable) {
+        return ResponseBuilder.ok("OK", handler.listar(pageable));
     }
 
     @PutMapping("/{id}")
-    public ApiResponse<CursoDTO> actualizar(
+    public ResponseEntity<ApiResponse<CursoDTO>> actualizar(
             @Parameter(description = "Id del curso", required = true)
             @PathVariable("id") Long id,
-            @Valid @RequestBody CursoCreateDTO dto) {
-        return ResponseBuilder.success("Curso actualizado", handler.actualizar(id, dto));
+            @Valid @RequestBody CursoUpdateDTO in) {
+        return ResponseBuilder.ok("Curso actualizado", handler.actualizar(id, in));
     }
 
     @DeleteMapping("/{id}")
-    public ApiResponse<Object> eliminar(
+    public ResponseEntity<ApiResponse<Object>> eliminar(
             @Parameter(description = "Id del curso", required = true)
             @PathVariable("id") Long id) {
         handler.eliminar(id);
-        return ResponseBuilder.success("Curso eliminado", null);
+        return ResponseBuilder.ok("Curso eliminado", null);
     }
 }

@@ -1,21 +1,34 @@
 package co.edu.cursosservice.config;
 
-import co.edu.cursosservice.dto.CursoCreateDTO;
-import co.edu.cursosservice.service.CursoService;
+import co.edu.cursosservice.model.Curso;
+import co.edu.cursosservice.repository.CursoRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class DataSeeder {
+
     @Bean
-    CommandLineRunner seed(CursoService service) {
+    CommandLineRunner seedCursos(CursoRepository repository) {
         return args -> {
-            if (service.listar().isEmpty()) {
-                CursoCreateDTO c = new CursoCreateDTO();
-                c.setCodigo("IS3-001"); c.setNombre("Ingeniería de Software III"); c.setDescripcion("Curso base"); c.setCreditos(4); c.setDocenteResponsable("Docente principal");
-                service.crear(c);
-            }
+            if (repository.count() > 0) return;
+
+            repository.save(curso("IS3-001", "Ingeniería de Software III", "Arquitectura y microservicios", 4, "Docente principal", 30));
+            repository.save(curso("BD2-001", "Bases de Datos II", "Modelado avanzado y SQL", 3, "Docente de bases de datos", 25));
+            // Cupo pequeño a propósito, para probar E2 rápidamente
+            repository.save(curso("RED-001", "Redes de Computadores", "Fundamentos de redes TCP/IP", 3, "Docente de redes", 2));
         };
+    }
+
+    private Curso curso(String codigo, String nombre, String descripcion, int creditos, String docente, int cupo) {
+        Curso c = new Curso();
+        c.setCodigo(codigo);
+        c.setNombre(nombre);
+        c.setDescripcion(descripcion);
+        c.setCreditos(creditos);
+        c.setDocenteResponsable(docente);
+        c.setCupoMaximo(cupo);
+        return c;
     }
 }

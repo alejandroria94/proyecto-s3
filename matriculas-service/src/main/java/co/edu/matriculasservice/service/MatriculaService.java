@@ -1,12 +1,16 @@
 package co.edu.matriculasservice.service;
 
-import co.edu.matriculasservice.dto.MatriculaCreateDTO;
-import co.edu.matriculasservice.dto.MatriculaDTO;
+import co.edu.matriculasservice.model.Matricula;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import java.util.List;
 
 public interface MatriculaService {
-    List<MatriculaDTO> listar();
-    MatriculaDTO buscarPorId(Long id);
-    MatriculaDTO registrar(MatriculaCreateDTO dto);
-    MatriculaDTO anular(Long id);
+    Page<Matricula> listar(Pageable pageable);
+    Matricula obtenerPorId(Long id);
+    Matricula registrar(Long estudianteId, Long cursoId);
+    Matricula anular(Long id);
+    long contarActivas(Long estudianteId, Long cursoId);
+    List<Matricula> listarPorEstudiante(Long estudianteId);
 }

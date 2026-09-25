@@ -11,6 +11,9 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+/**
+ * Responde 403 cuando el usuario está autenticado pero su rol no permite la operación.
+ */
 @Component
 public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 
