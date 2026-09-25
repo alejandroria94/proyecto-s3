@@ -54,7 +54,7 @@
   <div class="container">
     <a class="back" href="../">← Volver</a>
     <h1>Proyecto Final Guiado del Curso</h1>
-    <p>Portal principal con la navegación completa del proyecto final y las páginas de apoyo por módulo.</p>
+    <p>Portal del proyecto final: una plataforma académica terminada para analizar, verificar y sustentar.</p>
   </div>
 </header>
 <main>
@@ -62,57 +62,45 @@
 
 <section class="card">
   <h2>Bienvenida</h2>
-  <p>Este portal organiza el proyecto final del curso como una ruta de trabajo clara para el estudiante. La idea no es solo mostrar qué archivos debe construir, sino orientar el proceso completo: qué hacer primero, qué validar, qué evidencias obtener y cómo conectar todos los módulos hasta llegar a una solución funcional. También incluye una guía específica para comprender la seguridad del proyecto y sustentarla técnicamente.</p>
-  <div class="success"><strong>Punto de partida:</strong> antes de avanzar, descargue o clone el proyecto base desde el repositorio del curso y revise el laboratorio sobre el que se apoya el proyecto final.</div>
-  <p><a class="btn" href="https://github.com/alejandroria94/proyecto-s3.git" target="_blank" rel="noopener noreferrer">Abrir repositorio del proyecto base</a></p>
-</section>
-<section class="card">
-  <h2>Novedad: extensiones del proyecto</h2>
-  <p>El proyecto incluye cuatro extensiones ya implementadas: cupos por curso, integridad entre servicios, "mis matrículas" para el rol ESTUDIANTE y un nuevo <code>calificaciones-service</code>. Cada una tiene una guía de análisis paso a paso que recorre el código, cómo verificarlo y preguntas para responder. Empiece por la <a href="proyecto-final-guiado.html#extensiones">guía general</a>.</p>
-</section>
-<section class="card">
-  <h2>Novedad en seguridad</h2>
-  <p>El proyecto incorpora respuestas JSON uniformes para errores de autenticación y autorización. Esto significa que los servicios protegidos ya no responden solo con un código HTTP, sino también con un cuerpo estructurado que facilita el diagnóstico y las pruebas.</p>
-</section>
-
-
-<section class="card">
-  <h2>Ruta sugerida de trabajo</h2>
-  <div class="step"><strong>1.</strong> Lea primero la guía general para entender el caso, el alcance y los entregables.</div>
-  <div class="step"><strong>2.</strong> Implemente <code>auth-service</code> y verifique que el login genere un token válido.</div>
-  <div class="step"><strong>3.</strong> Construya <code>estudiantes-service</code> reutilizando el CRUD del laboratorio y protéjalo con JWT.</div>
-  <div class="step"><strong>4.</strong> Cree <code>cursos-service</code> repitiendo la arquitectura por capas con una nueva entidad.</div>
-  <div class="step"><strong>5.</strong> Desarrolle <code>matriculas-service</code>, que integra reglas de negocio y comunicación entre servicios.</div>
-  <div class="step"><strong>6.</strong> Documente, dockerice y pruebe el sistema completo con la guía final de Docker, Swagger y pruebas.</div>
+  <p>El proyecto final se entrega <strong>terminado</strong>: cinco microservicios construidos con las técnicas de los laboratorios. El trabajo consiste en analizarlo: recorrer el código con las guías paso a paso, ejecutar las verificaciones, responder las preguntas de análisis y sustentar las decisiones de diseño. No hay que escribir código.</p>
+  <div class="success"><strong>Punto de partida:</strong> clone el repositorio y ejecute el sistema siguiendo el <code>README.md</code>.</div>
+  <p><a class="btn" href="https://github.com/alejandroria94/proyecto-s3.git" target="_blank" rel="noopener noreferrer">Abrir repositorio del proyecto</a></p>
 </section>
 
 <section class="card">
-  <h2>Páginas del sitio</h2>
+  <h2>Ruta de análisis</h2>
+  <div class="step"><strong>1.</strong> Lea la <a href="proyecto-final-guiado.html">guía general</a>: caso, secuencia, entregables y rúbrica.</div>
+  <div class="step"><strong>2.</strong> Ejecute el sistema y las pruebas automatizadas (<code>mvn test</code>).</div>
+  <div class="step"><strong>3.</strong> Analice la <a href="seguridad.html">seguridad</a> y luego los módulos: <a href="auth-service.html">auth</a>, <a href="estudiantes-service.html">estudiantes</a>, <a href="cursos-service.html">cursos</a> y <a href="matriculas-service.html">matrículas</a>.</div>
+  <div class="step"><strong>4.</strong> Analice las extensiones en orden: <a href="extension-e2-cupos.html">E2</a>, <a href="extension-e1-integridad.html">E1</a>, <a href="extension-e4-mis-matriculas.html">E4</a> y <a href="extension-e3-calificaciones.html">E3</a>.</div>
+  <div class="step"><strong>5.</strong> Ejecute el sistema con <a href="docker-pruebas.html">Docker</a> y redacte el informe de análisis.</div>
+</section>
+
+<section class="card">
+  <h2>Guías de análisis</h2>
+  <p>Todas tienen la misma estructura: propósito, recorrido del código paso a paso, verificación con resultados esperados y preguntas de análisis.</p>
   <div class="grid-3">
-    <div class="link-card"><h3><a href="proyecto-final-guiado.html">Guía general del proyecto</a></h3><p>Explica el caso, el alcance, la secuencia de desarrollo, los roles, la rúbrica y el checklist final.</p></div>
-    <div class="link-card"><h3><a href="auth-service.html">Módulo auth-service</a></h3><p>Guía para construir el servicio de autenticación, generar JWT y validar el token.</p></div>
-    <div class="link-card"><h3><a href="estudiantes-service.html">Módulo estudiantes-service</a></h3><p>Guía para convertir el CRUD base en un microservicio protegido y bien organizado.</p></div>
-    <div class="link-card"><h3><a href="cursos-service.html">Módulo cursos-service</a></h3><p>Guía para replicar el patrón arquitectónico con una nueva entidad y nuevas reglas.</p></div>
-    <div class="link-card"><h3><a href="matriculas-service.html">Módulo matriculas-service</a></h3><p>Guía para implementar el servicio integrador con OpenFeign y validaciones cruzadas.</p></div>
-    <div class="link-card"><h3><a href="docker-pruebas.html">Docker, Swagger y pruebas</a></h3><p>Guía de empaquetado, orquestación, pruebas mínimas y evidencias de entrega.</p></div>
-    <div class="link-card"><h3><a href="extension-e2-cupos.html">Extensión E2 · Cupos</a></h3><p>Análisis de una regla de negocio que combina datos de cursos y matrículas.</p></div>
-    <div class="link-card"><h3><a href="extension-e1-integridad.html">Extensión E1 · Integridad</a></h3><p>Análisis de cómo se evita eliminar datos con matrículas activas entre servicios.</p></div>
-    <div class="link-card"><h3><a href="extension-e4-mis-matriculas.html">Extensión E4 · Mis matrículas</a></h3><p>Análisis de la autorización por dueño del recurso con datos en el JWT.</p></div>
-    <div class="link-card"><h3><a href="extension-e3-calificaciones.html">Extensión E3 · Calificaciones</a></h3><p>Análisis de un quinto microservicio completo: notas por corte y promedio ponderado.</p></div>
-    <div class="link-card"><h3><a href="seguridad.html">Guía de seguridad</a></h3><p>Explica autenticación, JWT, roles, filtros, validación del token y buenas prácticas de seguridad del proyecto.</p></div>
+    <div class="link-card"><h3><a href="proyecto-final-guiado.html">Guía general del proyecto</a></h3><p>Caso, alcance, secuencia de análisis, entregables, rúbrica y checklist.</p></div>
+    <div class="link-card"><h3><a href="seguridad.html">Seguridad</a></h3><p>Cómo se emite, viaja y valida el token; roles y respuestas 401/403.</p></div>
+    <div class="link-card"><h3><a href="auth-service.html">auth-service</a></h3><p>Login con BCrypt, generación y validación del JWT.</p></div>
+    <div class="link-card"><h3><a href="estudiantes-service.html">estudiantes-service</a></h3><p>La arquitectura por capas completa, capa por capa.</p></div>
+    <div class="link-card"><h3><a href="cursos-service.html">cursos-service</a></h3><p>El mismo patrón con otra entidad y otras reglas.</p></div>
+    <div class="link-card"><h3><a href="matriculas-service.html">matriculas-service</a></h3><p>El servicio integrador: OpenFeign y errores remotos.</p></div>
+    <div class="link-card"><h3><a href="extension-e2-cupos.html">Extensión E2 · Cupos</a></h3><p>Una regla de negocio que combina datos de cursos y matrículas.</p></div>
+    <div class="link-card"><h3><a href="extension-e1-integridad.html">Extensión E1 · Integridad</a></h3><p>Proteger datos relacionados entre servicios; dependencia circular.</p></div>
+    <div class="link-card"><h3><a href="extension-e4-mis-matriculas.html">Extensión E4 · Mis matrículas</a></h3><p>Autorización por dueño del recurso con datos en el JWT.</p></div>
+    <div class="link-card"><h3><a href="extension-e3-calificaciones.html">Extensión E3 · Calificaciones</a></h3><p>Un quinto microservicio completo: notas por corte y promedio.</p></div>
+    <div class="link-card"><h3><a href="docker-pruebas.html">Docker, Swagger y pruebas</a></h3><p>Empaquetado, orquestación, pruebas automatizadas y evidencias.</p></div>
   </div>
 </section>
 
 <section class="card">
-  <h2>Qué debe entregar el estudiante al final</h2>
+  <h2>Qué debe entregar el estudiante</h2>
   <ul>
-    <li>Repositorio con los microservicios, incluido <code>calificaciones-service</code>.</li>
-    <li>Informe de análisis de las extensiones E1–E4: evidencias de verificación y respuestas a las preguntas.</li>
-    <li>Endpoints funcionales y documentados en Swagger.</li>
-    <li>Autenticación con JWT y control de roles.</li>
-    <li><code>Dockerfile</code> por servicio y <code>docker-compose.yml</code>.</li>
-    <li>Evidencias de pruebas funcionales.</li>
-    <li>README o explicación mínima de ejecución.</li>
+    <li>Informe de análisis con una sección por guía: evidencias de verificación y respuestas a las preguntas, citando el código.</li>
+    <li>Diagrama propio de la arquitectura.</li>
+    <li>Resultado de <code>mvn test</code> y captura de <code>docker compose ps</code>.</li>
+    <li>Una propuesta de mejora justificada.</li>
   </ul>
 </section>
 

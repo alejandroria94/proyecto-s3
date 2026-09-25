@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Guía del estudiante - auth-service</title>
-
+  <title>Guía de análisis · auth-service</title>
   <style>
     :root{
       --blue:#1f3c88;--blue-dark:#142a61;--soft:#edf3ff;--soft-2:#f8fbff;--border:#dbe4f3;
@@ -46,50 +45,448 @@
     .btn{display:inline-block;background:var(--blue);color:#fff;text-decoration:none;padding:12px 18px;border-radius:12px;font-weight:700}
     .btn.secondary{background:#fff;color:var(--blue);border:1px solid var(--border)}
     @media (max-width: 920px){.grid-2,.grid-3{grid-template-columns:1fr}.toc ol{columns:1}}
+      .file{margin:18px 0 4px;font-weight:700;color:var(--muted)}
+    .file code{background:var(--code);padding:2px 6px;border-radius:6px}
+    .nav{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+    .nav a{color:#dbe7ff;text-decoration:none;font-weight:bold;border:1px solid #6d86c9;border-radius:999px;padding:4px 12px}
+    .nav a.actual{background:#fff;color:var(--blue)}
   </style>
-
 </head>
 <body>
 <header class="hero">
   <div class="container">
-    <a class="back" href="index.html">← Volver</a>
-    <h1>Módulo auth-service</h1>
-    <p>Guía de trabajo para construir el servicio de autenticación del proyecto.</p>
+    <a class="back" href="index.html">← Volver al portal</a>
+    <h1>Guía de análisis · auth-service</h1>
+    <p>El servicio que autentica usuarios y valida tokens para toda la plataforma</p>
+    <div class="nav"><a href="seguridad.html">Seguridad</a><a href="auth-service.html" class="actual">auth</a><a href="estudiantes-service.html">estudiantes</a><a href="cursos-service.html">cursos</a><a href="matriculas-service.html">matrículas</a><a href="docker-pruebas.html">Docker y pruebas</a></div>
   </div>
 </header>
 <main>
   <div class="container">
 
-<section class="card"><h2>Propósito del módulo</h2><p>El objetivo de <code>auth-service</code> es separar la autenticación del resto del sistema. En lugar de repetir verificación de usuario y contraseña en todos los microservicios, este servicio centraliza esa responsabilidad y entrega un token reutilizable por los demás módulos.</p><div class="success"><strong>Meta de aprendizaje:</strong> comprender la diferencia entre autenticación, autorización, cifrado de contraseña y validación de token.</div><div class="note"><strong>Refactor aplicado en este repositorio:</strong> la lógica de autenticación ya no vive en el controlador. <code>AuthController</code> delega en <code>AuthService</code>, donde se realiza la validación de credenciales y la generación o validación del JWT.</div></section>
-<section class="card"><h2>Qué debe lograr el estudiante</h2><ul><li>Recibir credenciales en <code>/auth/login</code>.</li><li>Buscar el usuario en base de datos.</li><li>Comparar la contraseña con BCrypt.</li><li>Generar un JWT con usuario y rol.</li><li>Exponer <code>/auth/validate</code> para validar el token.</li></ul></section>
-<section class="card"><h2>Prerrequisitos</h2><ul><li>Tener Java 21 y Maven funcionando.</li><li>Comprender la estructura por capas del curso.</li><li>Conocer DTO, endpoints REST y validación básica.</li></ul></section>
-<section class="card"><h2>Estructura sugerida</h2><pre><code>auth-service/
-├── controller/AuthController.java
-├── dto/LoginRequest.java
-├── dto/LoginResponse.java
-├── dto/TokenValidationResponse.java
-├── model/Usuario.java
-├── repository/UsuarioRepository.java
-├── util/JwtUtils.java
-├── config/SecurityConfig.java
-├── config/DataSeeder.java
-└── config/OpenApiConfig.java</code></pre></section>
-<section class="card"><h2>Pasos guiados</h2><div class="step"><strong>1.</strong> Cree el proyecto con Web, JPA, Validation, Security, H2 y Swagger.</div><div class="step"><strong>2.</strong> Defina la entidad <code>Usuario</code> con <code>username</code>, <code>password</code> y <code>role</code>.</div><div class="step"><strong>3.</strong> Cree el repositorio y el método para buscar por usuario.</div><div class="step"><strong>4.</strong> Implemente el DTO de entrada y el DTO de respuesta del login.</div><div class="step"><strong>5.</strong> Configure BCrypt para almacenar contraseñas cifradas.</div><div class="step"><strong>6.</strong> Implemente la utilidad JWT.</div><div class="step"><strong>7.</strong> Cree los endpoints <code>/auth/login</code> y <code>/auth/validate</code>.</div><div class="step"><strong>8.</strong> Agregue usuarios de prueba y valide el flujo completo en Swagger.</div></section>
-<section class="card"><h2>Endpoints mínimos</h2><table><thead><tr><th>Endpoint</th><th>Método</th><th>Descripción</th></tr></thead><tbody><tr><td><code>/auth/login</code></td><td>POST</td><td>Recibe usuario y contraseña y retorna un JWT.</td></tr><tr><td><code>/auth/validate</code></td><td>GET</td><td>Valida el token enviado por encabezado.</td></tr></tbody></table></section>
-<section class="card"><h2>Buenas prácticas que debe aplicar</h2><ul><li>No guardar contraseñas en texto plano.</li><li>No devolver la contraseña en la respuesta.</li><li>Permitir acceso libre solo a Swagger, H2 Console y los endpoints de autenticación.</li><li>Incluir el rol dentro del token para que otros servicios puedan autorizar acciones.</li></ul></section>
-<section class="card"><h2>Evidencias esperadas</h2><ol><li>Login exitoso con usuario válido.</li><li>Login fallido con credenciales incorrectas.</li><li>Validación correcta de un token.</li><li>Código o evidencia de los usuarios de prueba cargados.</li></ol></section>
-<section class="card"><h2>Errores comunes</h2><div class="warning"><ul><li>Olvidar cifrar la contraseña.</li><li>Configurar mal el secreto JWT.</li><li>No incluir el rol dentro del token.</li><li>Bloquear por error el acceso al endpoint de login.</li></ul></div></section>
-<section class="card"><h2>Checklist del módulo</h2><ul><li>Existe entidad Usuario correctamente configurada.</li><li>El login genera JWT.</li><li>El endpoint de validación responde correctamente.</li><li>Swagger documenta el módulo.</li><li>Hay al menos un caso positivo y uno negativo probados.</li></ul></section>
-
-<section class="card"><h2>Seguridad relacionada con este módulo</h2><p>Este módulo se complementa con la <strong>guía de seguridad</strong>, donde se explica con más detalle la diferencia entre autenticación y autorización, el contenido del JWT, el rol de los filtros y la forma en que Spring Security aplica las restricciones por rol.</p><ul><li><strong>Autenticación:</strong> ocurre en <code>/auth/login</code>.</li><li><strong>Validación de token:</strong> ocurre en <code>/auth/validate</code>.</li><li><strong>Autorización:</strong> se aplica luego en los microservicios de negocio mediante roles.</li></ul><p><a class="btn" href="seguridad.html">Abrir guía de seguridad</a></p></section>
-
-    
 <section class="card">
-  <h2>Cómo impacta este módulo a los demás servicios</h2>
-  <p>Aunque <code>auth-service</code> no devuelve la estructura uniforme 401/403 de los servicios protegidos, sí es la base de esa mecánica. Los demás módulos consultan <code>/auth/validate</code> y, según su respuesta, construyen errores estandarizados como <code>AUTH_HEADER_MISSING</code>, <code>TOKEN_INVALID</code> y <code>AUTH_FORBIDDEN</code>.</p>
+  <h2>Propósito del módulo</h2>
+  <p><code>auth-service</code> separa la autenticación del resto del sistema. En lugar de repetir la verificación de usuario y contraseña en cada microservicio, este servicio la centraliza y entrega un token que los demás módulos pueden verificar.</p>
+  <table><thead><tr><th>Endpoint</th><th>Método</th><th>Acceso</th><th>Descripción</th></tr></thead><tbody>
+    <tr><td><code>/auth/login</code></td><td>POST</td><td>Público</td><td>Recibe usuario y contraseña y devuelve un JWT</td></tr>
+    <tr><td><code>/auth/validate</code></td><td>GET</td><td>Encabezado <code>Authorization</code></td><td>Indica si el token es válido y devuelve usuario, rol y <code>estudianteId</code></td></tr>
+  </tbody></table>
+  <div class="note"><strong>Cómo usar esta guía:</strong> el código ya está en el repositorio. Recorra los pasos con el proyecto abierto, ejecute la verificación y responda las preguntas de análisis. <strong>No hay que escribir código.</strong> Complemente con la <a href="seguridad.html">guía de seguridad</a>.</div>
 </section>
 
-<div class="footer">Ingeniería de Software III · Proyecto final guiado</div>
+<section class="card">
+  <h2>Estructura del servicio</h2>
+  <pre><code>co.edu.authservice
+├── AuthServiceApplication.java
+├── api          → ApiErrorResponse
+├── config       → SecurityConfig, DataSeeder, OpenApiConfig
+├── controller   → AuthController, GlobalExceptionHandler
+├── dto          → LoginRequest, LoginResponse, TokenValidationResponse
+├── exception    → InvalidCredentialsException, InvalidTokenException
+├── model        → Usuario
+├── repository   → UsuarioRepository
+├── service      → AuthService, AuthServiceImpl
+└── util         → JwtUtils</code></pre>
+</section>
+
+<section class="card">
+  <h2>Paso 1 — Usuarios y contraseñas</h2>
+  <p class="file">Archivo: <code>auth-service/src/main/java/co/edu/authservice/model/Usuario.java</code></p>
+<pre><code>package co.edu.authservice.model;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "usuarios")
+public class Usuario {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(nullable = false, unique = true)
+    private String username;
+    @Column(nullable = false)
+    private String password;
+    @Column(nullable = false)
+    private String role;
+    // E4: solo los usuarios con rol ESTUDIANTE quedan asociados a un estudiante de estudiantes-service
+    private Long estudianteId;
+
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
+    public Long getEstudianteId() { return estudianteId; }
+    public void setEstudianteId(Long estudianteId) { this.estudianteId = estudianteId; }
+}</code></pre>
+  <p class="file">Archivo: <code>auth-service/src/main/java/co/edu/authservice/repository/UsuarioRepository.java</code></p>
+<pre><code>package co.edu.authservice.repository;
+
+import co.edu.authservice.model.Usuario;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
+
+public interface UsuarioRepository extends JpaRepository&lt;Usuario, Long&gt; {
+    Optional&lt;Usuario&gt; findByUsername(String username);
+}</code></pre>
+  <p class="file">Archivo: <code>auth-service/src/main/java/co/edu/authservice/config/DataSeeder.java</code></p>
+<pre><code>package co.edu.authservice.config;
+
+import co.edu.authservice.model.Usuario;
+import co.edu.authservice.repository.UsuarioRepository;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+@Configuration
+public class DataSeeder {
+    @Bean
+    CommandLineRunner seedUsers(UsuarioRepository repository, PasswordEncoder encoder) {
+        return args -&gt; {
+            if (repository.count() == 0) {
+                repository.save(build("admin", "admin123", "ADMIN", null, encoder));
+                repository.save(build("docente", "docente123", "DOCENTE", null, encoder));
+                // E4: el usuario "estudiante" corresponde al estudiante con id 1
+                repository.save(build("estudiante", "estudiante123", "ESTUDIANTE", 1L, encoder));
+            }
+        };
+    }
+
+    private Usuario build(String username, String rawPassword, String role, Long estudianteId, PasswordEncoder encoder) {
+        Usuario u = new Usuario();
+        u.setUsername(username);
+        u.setPassword(encoder.encode(rawPassword));
+        u.setRole(role);
+        u.setEstudianteId(estudianteId);
+        return u;
+    }
+}</code></pre>
+  <p>Las contraseñas se guardan con <code>encoder.encode</code> (BCrypt). El <code>PasswordEncoder</code> se declara en la configuración de seguridad, que además deja públicos el login, Swagger y la consola H2:</p>
+  <p class="file">Archivo: <code>auth-service/src/main/java/co/edu/authservice/config/SecurityConfig.java</code></p>
+<pre><code>package co.edu.authservice.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+
+@Configuration
+public class SecurityConfig {
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf(csrf -&gt; csrf.disable())
+                .authorizeHttpRequests(auth -&gt; auth
+                        .requestMatchers("/auth/**", "/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**", "/h2-console/**", "/error").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .headers(headers -&gt; headers.frameOptions(frame -&gt; frame.disable()));
+
+        return http.build();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+}</code></pre>
+</section>
+
+<section class="card">
+  <h2>Paso 2 — Contrato de entrada y salida</h2>
+  <p class="file">Archivo: <code>auth-service/src/main/java/co/edu/authservice/dto/LoginRequest.java</code></p>
+<pre><code>package co.edu.authservice.dto;
+
+import jakarta.validation.constraints.NotBlank;
+
+public class LoginRequest {
+    @NotBlank
+    private String username;
+    @NotBlank
+    private String password;
+
+    public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
+}</code></pre>
+  <p class="file">Archivo: <code>auth-service/src/main/java/co/edu/authservice/dto/LoginResponse.java</code></p>
+<pre><code>package co.edu.authservice.dto;
+
+public class LoginResponse {
+    private String token;
+    private String username;
+    private String role;
+
+    public LoginResponse() {
+    }
+
+    public LoginResponse(String token, String username, String role) {
+        this.token = token;
+        this.username = username;
+        this.role = role;
+    }
+
+    public String getToken() { return token; }
+    public void setToken(String token) { this.token = token; }
+    public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
+}</code></pre>
+  <p>La respuesta del login nunca incluye la contraseña. <code>TokenValidationResponse</code> es el contrato que consumen los demás servicios desde <code>/auth/validate</code>.</p>
+</section>
+
+<section class="card">
+  <h2>Paso 3 — Generación y lectura del JWT</h2>
+  <p class="file">Archivo: <code>auth-service/src/main/java/co/edu/authservice/util/JwtUtils.java</code></p>
+<pre><code>package co.edu.authservice.util;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtBuilder;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
+import java.util.Date;
+
+@Component
+public class JwtUtils {
+    @Value("${app.jwt.secret}")
+    private String secret;
+
+    @Value("${app.jwt.expiration-ms}")
+    private long expirationMs;
+
+    private SecretKey getKey() {
+        return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+    }
+
+    public String generateToken(String username, String role, Long estudianteId) {
+        Date now = new Date();
+        Date expiration = new Date(now.getTime() + expirationMs);
+        JwtBuilder builder = Jwts.builder()
+                .setSubject(username)
+                .claim("role", role)
+                .setIssuedAt(now)
+                .setExpiration(expiration);
+        // E4: el claim solo existe para usuarios asociados a un estudiante
+        if (estudianteId != null) {
+            builder.claim("estudianteId", estudianteId);
+        }
+        return builder.signWith(getKey(), SignatureAlgorithm.HS256).compact();
+    }
+
+    public Claims parseToken(String token) {
+        return Jwts.parserBuilder().setSigningKey(getKey()).build().parseClaimsJws(token).getBody();
+    }
+}</code></pre>
+  <p class="file">Archivo: <code>auth-service/src/main/resources/application.yaml</code></p>
+<pre><code>server:
+  port: 8081
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:authdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+app:
+  jwt:
+    secret: 12345678901234567890123456789012
+    expiration-ms: 3600000</code></pre>
+  <p>El secreto debe tener al menos 32 caracteres para HS256. La expiración (<code>expiration-ms</code>) es de una hora.</p>
+</section>
+
+<section class="card">
+  <h2>Paso 4 — La lógica del servicio</h2>
+  <p class="file">Archivo: <code>auth-service/src/main/java/co/edu/authservice/service/AuthServiceImpl.java</code></p>
+<pre><code>package co.edu.authservice.service;
+
+import co.edu.authservice.dto.LoginRequest;
+import co.edu.authservice.dto.LoginResponse;
+import co.edu.authservice.dto.TokenValidationResponse;
+import co.edu.authservice.exception.InvalidCredentialsException;
+import co.edu.authservice.exception.InvalidTokenException;
+import co.edu.authservice.model.Usuario;
+import co.edu.authservice.repository.UsuarioRepository;
+import co.edu.authservice.util.JwtUtils;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+@Service
+public class AuthServiceImpl implements AuthService {
+
+    private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtUtils jwtUtils;
+
+    public AuthServiceImpl(UsuarioRepository usuarioRepository,
+                           PasswordEncoder passwordEncoder,
+                           JwtUtils jwtUtils) {
+        this.usuarioRepository = usuarioRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtUtils = jwtUtils;
+    }
+
+    @Override
+    public LoginResponse login(LoginRequest request) {
+        Usuario usuario = usuarioRepository.findByUsername(request.getUsername())
+                .orElseThrow(() -&gt; new InvalidCredentialsException("Credenciales inválidas"));
+
+        if (!passwordEncoder.matches(request.getPassword(), usuario.getPassword())) {
+            throw new InvalidCredentialsException("Credenciales inválidas");
+        }
+
+        String token = jwtUtils.generateToken(usuario.getUsername(), usuario.getRole(), usuario.getEstudianteId());
+        return new LoginResponse(token, usuario.getUsername(), usuario.getRole());
+    }
+
+    @Override
+    public TokenValidationResponse validate(String authorization) {
+        if (authorization == null || !authorization.startsWith("Bearer ")) {
+            throw new InvalidTokenException("Debe enviar un token Bearer válido");
+        }
+
+        try {
+            String token = authorization.replace("Bearer ", "");
+            var claims = jwtUtils.parseToken(token);
+            return new TokenValidationResponse(
+                    true,
+                    claims.getSubject(),
+                    claims.get("role", String.class),
+                    claims.get("estudianteId", Long.class)
+            );
+        } catch (Exception ex) {
+            throw new InvalidTokenException("Token inválido o expirado");
+        }
+    }
+}</code></pre>
+  <ul>
+    <li><strong>login:</strong> busca el usuario, compara la contraseña y genera el token. El mismo mensaje sirve para usuario inexistente y contraseña incorrecta.</li>
+    <li><strong>validate:</strong> exige el prefijo <code>Bearer</code>, verifica firma y expiración con <code>parseToken</code> y devuelve los datos del token. Cualquier fallo se convierte en <code>InvalidTokenException</code>.</li>
+  </ul>
+</section>
+
+<section class="card">
+  <h2>Paso 5 — Controlador y errores</h2>
+  <p class="file">Archivo: <code>auth-service/src/main/java/co/edu/authservice/controller/AuthController.java</code></p>
+<pre><code>package co.edu.authservice.controller;
+
+import co.edu.authservice.dto.LoginRequest;
+import co.edu.authservice.dto.LoginResponse;
+import co.edu.authservice.dto.TokenValidationResponse;
+import co.edu.authservice.service.AuthService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/auth")
+public class AuthController {
+    private final AuthService authService;
+
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity&lt;LoginResponse&gt; login(@Valid @RequestBody LoginRequest request) {
+        return ResponseEntity.ok(authService.login(request));
+    }
+
+    @GetMapping("/validate")
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity&lt;TokenValidationResponse&gt; validate(@RequestHeader(value = "Authorization", required = false) String authorization) {
+        return ResponseEntity.ok(authService.validate(authorization));
+    }
+}</code></pre>
+  <p>El encabezado es opcional (<code>required = false</code>) para que su ausencia llegue al servicio y termine en un <code>401</code> claro, no en un <code>500</code>.</p>
+  <p class="file">Archivo: <code>auth-service/src/main/java/co/edu/authservice/controller/GlobalExceptionHandler.java</code></p>
+<pre><code>@ExceptionHandler(InvalidCredentialsException.class)
+public ResponseEntity&lt;ApiErrorResponse&gt; handleInvalidCredentials(
+        InvalidCredentialsException ex,
+        HttpServletRequest request) {
+
+    ApiErrorResponse response = ApiErrorResponse.of(
+            ex.getMessage(),
+            "AUTH_INVALID_CREDENTIALS",
+            HttpStatus.UNAUTHORIZED.value(),
+            request.getRequestURI()
+    );
+
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+}
+
+@ExceptionHandler(InvalidTokenException.class)
+public ResponseEntity&lt;ApiErrorResponse&gt; handleInvalidToken(
+        InvalidTokenException ex,
+        HttpServletRequest request) {
+
+    ApiErrorResponse response = ApiErrorResponse.of(
+            ex.getMessage(),
+            "AUTH_INVALID_TOKEN",
+            HttpStatus.UNAUTHORIZED.value(),
+            request.getRequestURI()
+    );
+
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+}</code></pre>
+</section>
+
+<section class="card">
+  <h2>Verificación</h2>
+  <p>Swagger: <code>http://localhost:8081/swagger-ui.html</code>.</p>
+  <table><thead><tr><th>#</th><th>Acción</th><th>Resultado esperado</th></tr></thead><tbody>
+    <tr><td>1</td><td><code>POST /auth/login</code> con <code>admin / admin123</code></td><td><code>200</code> con <code>token</code>, <code>username</code> y <code>role</code></td></tr>
+    <tr><td>2</td><td>Login con contraseña incorrecta</td><td><code>401 AUTH_INVALID_CREDENTIALS</code></td></tr>
+    <tr><td>3</td><td>Login con cuerpo <code>{}</code></td><td><code>400 VALIDATION_ERROR</code></td></tr>
+    <tr><td>4</td><td><strong>Authorize</strong> con el token y <code>GET /auth/validate</code></td><td><code>200</code>, <code>"valid": true</code>, <code>"role": "ADMIN"</code></td></tr>
+    <tr><td>5</td><td>Lo mismo con el token de <code>estudiante / estudiante123</code></td><td><code>"estudianteId": 1</code></td></tr>
+    <tr><td>6</td><td><code>GET /auth/validate</code> sin autorizar</td><td><code>401 AUTH_INVALID_TOKEN</code></td></tr>
+    <tr><td>7</td><td><code>GET /auth/validate</code> con el token alterado (cambie una letra)</td><td><code>401 AUTH_INVALID_TOKEN</code></td></tr>
+    <tr><td>8</td><td>Consola H2 (<code>jdbc:h2:mem:authdb</code>): <code>SELECT * FROM usuarios</code></td><td>Contraseñas cifradas y <code>estudiante_id</code> = 1 solo para el estudiante</td></tr>
+  </tbody></table>
+  <p>Pruebas automatizadas: <code>JwtUtilsTest</code> y <code>AuthFlowIntegrationTest</code> (<code>mvn test</code> en <code>auth-service</code>).</p>
+</section>
+
+<section class="card">
+  <h2>Preguntas de análisis</h2>
+  <ol>
+    <li>¿Por qué el login responde el mismo mensaje cuando el usuario no existe y cuando la contraseña es incorrecta?</li>
+    <li>BCrypt genera un hash distinto cada vez aunque la contraseña sea la misma. ¿Cómo puede entonces <code>matches</code> verificarla?</li>
+    <li>¿Qué sucede con un token emitido antes de que expire si el administrador cambia el rol del usuario? ¿Cómo se podría resolver?</li>
+    <li><code>/auth/validate</code> responde <code>401</code> ante cualquier falla del token. ¿Qué información se pierde y por qué podría ser una decisión intencional?</li>
+  </ol>
+</section>
+
+<div class="footer">Ingeniería de Software III · Proyecto final guiado · Guía de análisis</div>
   </div>
 </main>
 </body>
